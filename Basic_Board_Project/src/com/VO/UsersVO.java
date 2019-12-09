@@ -3,10 +3,12 @@ package com.VO;
 import java.util.Date;
 
 public class UsersVO {
+
 	private int USER_CODE;
 	private String USERID;
 	private String PASSWORD;
 	private String NAME;
+
 	private Date CREATE_DATE;
 
 	public UsersVO() {

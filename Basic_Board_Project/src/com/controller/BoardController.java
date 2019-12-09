@@ -16,6 +16,7 @@ import com.DAO.BoardDAO;
 import com.DAO.BoardDAOImpl;
 import com.VO.BoardsVO;
 import com.VO.CommentsVO;
+import com.VO.FilesVO;
 import com.VO.UsersVO;
 
 @WebServlet("/BoardController")
@@ -76,10 +77,12 @@ public class BoardController extends HttpServlet {
 			ArrayList<UsersVO> usersList = dao.selectUsers();
 			ArrayList<BoardsVO> boardsList = dao.selectBoards();
 			ArrayList<CommentsVO> commentsList = dao.selectComments();
+			ArrayList<FilesVO> filesList = dao.selectFiles();
 
 			request.setAttribute("usersList", usersList);
 			request.setAttribute("boardsList", boardsList);
 			request.setAttribute("commentsList", commentsList);
+			request.setAttribute("filesList", filesList);
 			view = "/Board/selectAll.jsp";
 
 		} catch (Exception e) {

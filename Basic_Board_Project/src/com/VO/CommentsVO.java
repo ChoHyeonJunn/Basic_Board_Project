@@ -3,25 +3,35 @@ package com.VO;
 import java.util.Date;
 
 public class CommentsVO {
+
+	private int COMMENT_CODE;
 	private int BOARD_CODE;
 	private int USER_CODE;
 	private String CONTEXT;
+
 	private int COUNT_GOOD;
 	private int COUNT_BAD;
 	private Date CREATE_DATE;
+	private Date UPDATE_DATE;
+
+	private boolean DEL_YN;
 
 	public CommentsVO() {
 		super();
 	}
 
-	public CommentsVO(int bOARD_CODE, int uSER_CODE, String cONTEXT, int cOUNT_GOOD, int cOUNT_BAD, Date cREATE_DATE) {
+	public CommentsVO(int cOMMENT_CODE, int bOARD_CODE, int uSER_CODE, String cONTEXT, int cOUNT_GOOD, int cOUNT_BAD,
+			Date cREATE_DATE, Date uPDATE_DATE, boolean dEL_YN) {
 		super();
+		COMMENT_CODE = cOMMENT_CODE;
 		BOARD_CODE = bOARD_CODE;
 		USER_CODE = uSER_CODE;
 		CONTEXT = cONTEXT;
 		COUNT_GOOD = cOUNT_GOOD;
 		COUNT_BAD = cOUNT_BAD;
 		CREATE_DATE = cREATE_DATE;
+		UPDATE_DATE = uPDATE_DATE;
+		DEL_YN = dEL_YN;
 	}
 
 	public int getBOARD_CODE() {
@@ -70,6 +80,30 @@ public class CommentsVO {
 
 	public void setCREATE_DATE(Date cREATE_DATE) {
 		CREATE_DATE = cREATE_DATE;
+	}
+
+	public int getCOMMENT_CODE() {
+		return COMMENT_CODE;
+	}
+
+	public void setCOMMENT_CODE(int cOMMENT_CODE) {
+		COMMENT_CODE = cOMMENT_CODE;
+	}
+
+	public Date getUPDATE_DATE() {
+		return UPDATE_DATE;
+	}
+
+	public void setUPDATE_DATE(Date uPDATE_DATE) {
+		UPDATE_DATE = uPDATE_DATE;
+	}
+
+	public boolean isDEL_YN() {
+		return DEL_YN;
+	}
+
+	public void setDEL_YN(boolean dEL_YN) {
+		DEL_YN = dEL_YN;
 	}
 
 }

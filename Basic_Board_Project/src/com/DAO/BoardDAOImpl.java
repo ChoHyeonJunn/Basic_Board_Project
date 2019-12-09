@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 import com.VO.BoardsVO;
 import com.VO.CommentsVO;
+import com.VO.FilesVO;
 import com.VO.UsersVO;
 
 public class BoardDAOImpl implements BoardDAO {
@@ -71,7 +72,9 @@ public class BoardDAOImpl implements BoardDAO {
 				board.setUSER_CODE(rs.getInt("USER_CODE"));
 				board.setTITLE(rs.getString("TITLE"));
 				board.setCONTEXT(rs.getString("CONTEXT"));
+
 				board.setCOUNT_VIEW(rs.getInt("COUNT_VIEW"));
+				board.setCOUNT_COMMENT(rs.getInt("COUNT_COMMENT"));
 				board.setCREATE_DATE(rs.getDate("CREATE_DATE"));
 				board.setUPDATE_DATE(rs.getDate("UPDATE_DATE"));
 
@@ -101,12 +104,15 @@ public class BoardDAOImpl implements BoardDAO {
 			while (rs.next()) {
 				CommentsVO comment = new CommentsVO();
 
+				comment.setCOMMENT_CODE(rs.getInt("COMMENT_CODE"));
 				comment.setBOARD_CODE(rs.getInt("BOARD_CODE"));
 				comment.setUSER_CODE(rs.getInt("USER_CODE"));
 				comment.setCONTEXT(rs.getString("CONTEXT"));
+
 				comment.setCOUNT_GOOD(rs.getInt("COUNT_GOOD"));
 				comment.setCOUNT_BAD(rs.getInt("COUNT_BAD"));
 				comment.setCREATE_DATE(rs.getDate("CREATE_DATE"));
+				comment.setUPDATE_DATE(rs.getDate("UPDATE_DATE"));
 
 				commentsList.add(comment);
 			}
@@ -138,6 +144,7 @@ public class BoardDAOImpl implements BoardDAO {
 				user.setUSERID(rs.getString("USERID"));
 				user.setPASSWORD(rs.getString("PASSWORD"));
 				user.setNAME(rs.getString("NAME"));
+
 				user.setCREATE_DATE(rs.getDate("CREATE_DATE"));
 
 				usersList.add(user);
@@ -151,6 +158,44 @@ public class BoardDAOImpl implements BoardDAO {
 		}
 
 		return usersList;
+	}
+
+	@Override
+	public ArrayList<FilesVO> selectFiles() throws Exception {
+		connect();
+		ArrayList<FilesVO> filesList = new ArrayList<FilesVO>();
+
+		String sql = "SELECT * FROM FILES";
+
+		try {
+			pstmt = conn.prepareStatement(sql);
+			ResultSet rs = pstmt.executeQuery();
+			while (rs.next()) {
+				FilesVO file = new FilesVO();
+
+				file.setFILE_CODE(rs.getInt("FILE_CODE"));
+				file.setBOARD_CODE(rs.getInt("BOARD_CODE"));
+				file.setUSER_CODE(rs.getInt("USER_CODE"));
+				file.setFILE_ORIGINAL_NAME(rs.getString("FILE_ORIGINAL_NAME"));
+				
+				file.setFILE_STORED_NAME(rs.getString("FILE_STORED_NAME"));
+				file.setFILE_PATH(rs.getString("FILE_PATH"));
+				file.setFILE_SIZE(rs.getString("FILE_SIZE"));
+				file.setCREATE_DATE(rs.getDate("CREATE_DATE"));
+
+				file.setDEL_YN(rs.getBoolean("DEL_YN"));
+
+				filesList.add(file);
+			}
+			rs.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			disconnect();
+		}
+
+		return filesList;
 	}
 
 }
