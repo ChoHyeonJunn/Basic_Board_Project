@@ -2,6 +2,7 @@ package com.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
 import javax.servlet.RequestDispatcher;
@@ -32,8 +33,7 @@ public class BoardController extends HttpServlet {
 		super();
 	}
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		this.request = request;
 		this.response = response;
 
@@ -51,18 +51,25 @@ public class BoardController extends HttpServlet {
 		case "listAll":
 			listAllData();
 			break;
+		case "insert":
+			//insertData();
+			break;
+		case "edit":
+			//viewEdit();
+			break;
+		case "update":
+			//updateData();
+			break;
+		case "delete":
+			//deleteData();
+			break;
 		}
-
+		
 		RequestDispatcher dispatcher = request.getRequestDispatcher(view);
 		dispatcher.forward(request, response);
 		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
-
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		doGet(request, response);
-	}
-
+	
 	private void listAllData() {
 
 		try {
@@ -79,6 +86,14 @@ public class BoardController extends HttpServlet {
 			e.printStackTrace();
 		}
 
+	}
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		processRequest(request,response);
+	}
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		processRequest(request,response);
 	}
 
 }
