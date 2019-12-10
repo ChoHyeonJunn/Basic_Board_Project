@@ -16,11 +16,11 @@
 	<table>
 		<thead>
 			<tr>
-				<th>USER_CODE</th>
-				<th>USERID</th>
-				<th>PASSWORD</th>
-				<th>NAME</th>
-				<th>CREATE_DATE</th>
+				<th> USER_CODE</th>
+				<th> USERID</th>
+				<th> PASSWORD</th>
+				<th> NAME</th>
+				<th> CREATE_DATE</th>
 			</tr>
 		</thead>
 
@@ -35,18 +35,18 @@
 		</c:forEach>
 	</table>
 	------------------------------------------------------------------------
-	
+
 	<h1>Boards Data</h1>
 	<table>
 		<thead>
 			<tr>
-				<th>BOARD_CODE</th>
-				<th>USER_CODE</th>
-				<th>TITLE</th>
-				<th>CONTEXT</th>
-				<th>COUNT_VIEW</th>
-				<th>CREATE_DATE</th>
-				<th>UPDATE_DATE</th>
+				<th> BOARD_CODE</th>
+				<th> USER_CODE</th>
+				<th> TITLE</th>
+				<th> CONTEXT</th>
+				<th> COUNT_VIEW</th>
+				<th> CREATE_DATE</th>
+				<th> UPDATE_DATE</th>
 			</tr>
 		</thead>
 
@@ -63,17 +63,17 @@
 		</c:forEach>
 	</table>
 	------------------------------------------------------------------------
-	
+
 	<h1>Comments Data</h1>
 	<table>
 		<thead>
 			<tr>
-				<th>BOARD_CODE</th>
-				<th>USER_CODE</th>
-				<th>CONTEXT</th>
-				<th>COUNT_GOOD</th>
-				<th>COUNT_BAD</th>
-				<th>CREATE_DATE</th>
+				<th> BOARD_CODE</th>
+				<th> USER_CODE</th>
+				<th> CONTEXT</th>
+				<th> COUNT_GOOD</th>
+				<th> COUNT_BAD</th>
+				<th> CREATE_DATE</th>
 			</tr>
 		</thead>
 
@@ -85,6 +85,38 @@
 				<td>${comments.COUNT_GOOD}</td>
 				<td>${comments.COUNT_BAD}</td>
 				<td>${comments.CREATE_DATE}</td>
+			</tr>
+		</c:forEach>
+	</table>
+	------------------------------------------------------------------------
+
+	<h1>Files Data</h1>
+	<table>
+		<thead>
+			<tr>
+				<th> FILE_CODE</th>
+				<th> BOARD_CODE</th>
+				<th> USER_CODE</th>
+				<th> FILE_ORIGINAL_NAME</th>
+				<th> FILE_STORED_NAME</th>
+				<th> FILE_PATH</th>
+				<th> FILE_SIZE</th>
+				<th> CREATE_DATE</th>
+				<th >DEL_YN</th>
+			</tr>
+		</thead>
+
+		<c:forEach items="${filesList}" var="files">
+			<tr>
+				<td>${files.FILE_CODE}</td>
+				<td>${files.BOARD_CODE}</td>
+				<td>${files.USER_CODE}</td>
+				<td>${files.FILE_ORIGINAL_NAME}</td>
+				<td>${files.FILE_STORED_NAME}</td>
+				<td>${files.FILE_PATH}</td>
+				<td>${files.FILE_SIZE}</td>
+				<td>${files.CREATE_DATE}</td>
+				<td>${files.DEL_YN}</td>
 			</tr>
 		</c:forEach>
 	</table>
