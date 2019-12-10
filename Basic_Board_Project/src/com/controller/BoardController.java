@@ -18,6 +18,7 @@ import com.VO.BoardsVO;
 import com.VO.CommentsVO;
 import com.VO.FilesVO;
 import com.VO.UsersVO;
+import com.service.BoardServiceImpl;
 
 @WebServlet("/BoardController")
 public class BoardController extends HttpServlet {
@@ -29,12 +30,14 @@ public class BoardController extends HttpServlet {
 	private PrintWriter out;
 
 	private BoardDAO dao = new BoardDAOImpl();
+	private BoardServiceImpl boardService = new BoardServiceImpl();
 
 	public BoardController() {
 		super();
 	}
 
-	private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+	private void processRequest(HttpServletRequest request, HttpServletResponse response)
+			throws IOException, ServletException {
 		this.request = request;
 		this.response = response;
 
@@ -50,53 +53,40 @@ public class BoardController extends HttpServlet {
 
 		switch (action) {
 		case "listAll":
-			listAllData();
+			// listAllData();
+			request.setAttribute("usersList", boardService.selectUsersListData());
+			request.setAttribute("boardsList", boardService.selectBoardsListData());
+			request.setAttribute("commentsList", boardService.selectCommentsListData());
+			request.setAttribute("filesList", boardService.selectFilesListData());
+			view = "/Board/selectAll.jsp";
 			break;
 		case "insert":
-			//insertData();
+			// insertData();
 			break;
 		case "edit":
-			//viewEdit();
+			// viewEdit();
 			break;
 		case "update":
-			//updateData();
+			// updateData();
 			break;
 		case "delete":
-			//deleteData();
+			// deleteData();
 			break;
 		}
-		
+
 		RequestDispatcher dispatcher = request.getRequestDispatcher(view);
 		dispatcher.forward(request, response);
 		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
-	
-	private void listAllData() {
 
-		try {
-			ArrayList<UsersVO> usersList = dao.selectUsers();
-			ArrayList<BoardsVO> boardsList = dao.selectBoards();
-			ArrayList<CommentsVO> commentsList = dao.selectComments();
-			ArrayList<FilesVO> filesList = dao.selectFiles();
-
-			request.setAttribute("usersList", usersList);
-			request.setAttribute("boardsList", boardsList);
-			request.setAttribute("commentsList", commentsList);
-			request.setAttribute("filesList", filesList);
-			view = "/Board/selectAll.jsp";
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		processRequest(request, response);
 	}
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		processRequest(request,response);
-	}
-
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		processRequest(request,response);
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		processRequest(request, response);
 	}
 
 }
