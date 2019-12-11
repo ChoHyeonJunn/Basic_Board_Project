@@ -17,7 +17,7 @@ public interface BoardService {
 
 	public ArrayList<FilesVO> selectFilesListData();
 
-	public void insertData();
+	public boolean insertUser(UsersVO usersVO);
 
 	public void viewEdit();
 

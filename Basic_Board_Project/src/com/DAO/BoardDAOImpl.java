@@ -12,59 +12,23 @@ import com.VO.CommentsVO;
 import com.VO.FilesVO;
 import com.VO.UsersVO;
 
-public class BoardDAOImpl implements BoardDAO {
-
-	Connection conn = null;
-	PreparedStatement pstmt = null;
-	String jdbc_driver = "oracle.jdbc.driver.OracleDriver";
-
-	String user = "board";
-	String pw = "board";
-	String url = "jdbc:oracle:thin:@localhost:1521:xe";
-
-	@Override
-	public void connect() {
-		// TODO Auto-generated method stub
-		try {
-			Class.forName(jdbc_driver);
-			conn = DriverManager.getConnection(url, user, pw);
-		} catch (ClassNotFoundException | SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-	}
-
-	@Override
-	public void disconnect() {
-		// TODO Auto-generated method stub
-		if (pstmt != null) {
-			try {
-				pstmt.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-
-		if (conn != null) {
-			try {
-				conn.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
+public class BoardDAOImpl extends JDBCTemplate implements BoardDAO {
+	
 	@Override
 	public ArrayList<BoardsVO> selectBoards() throws Exception {
-		connect();
+		
+		Connection conn = getConnection();
 		ArrayList<BoardsVO> boardsList = new ArrayList<BoardsVO>();
 
 		String sql = "SELECT * FROM BOARDS";
+		
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 
 		try {
 			pstmt = conn.prepareStatement(sql);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
+			
 			while (rs.next()) {
 				BoardsVO board = new BoardsVO();
 
@@ -80,12 +44,14 @@ public class BoardDAOImpl implements BoardDAO {
 
 				boardsList.add(board);
 			}
-			rs.close();
+			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			System.out.println("[ ERROR ] : BoardDAOImpl - selectBoards() SQL 확인하세요.");
 			e.printStackTrace();
 		} finally {
-			disconnect();
+			close(rs);
+			close(pstmt);
+			close(conn);
 		}
 
 		return boardsList;
@@ -93,14 +59,18 @@ public class BoardDAOImpl implements BoardDAO {
 
 	@Override
 	public ArrayList<CommentsVO> selectComments() throws Exception {
-		connect();
+		
+		Connection conn = getConnection();
 		ArrayList<CommentsVO> commentsList = new ArrayList<CommentsVO>();
 
 		String sql = "SELECT * FROM COMMENTS";
 
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+
 		try {
 			pstmt = conn.prepareStatement(sql);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next()) {
 				CommentsVO comment = new CommentsVO();
 
@@ -116,12 +86,14 @@ public class BoardDAOImpl implements BoardDAO {
 
 				commentsList.add(comment);
 			}
-			rs.close();
+			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			System.out.println("[ ERROR ] : BoardDAOImpl - selectComments() SQL 확인하세요.");
 			e.printStackTrace();
 		} finally {
-			disconnect();
+			close(rs);
+			close(pstmt);
+			close(conn);
 		}
 
 		return commentsList;
@@ -129,14 +101,18 @@ public class BoardDAOImpl implements BoardDAO {
 
 	@Override
 	public ArrayList<UsersVO> selectUsers() throws Exception {
-		connect();
+		
+		Connection conn = getConnection();
 		ArrayList<UsersVO> usersList = new ArrayList<UsersVO>();
 
 		String sql = "SELECT * FROM USERS";
 
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+
 		try {
 			pstmt = conn.prepareStatement(sql);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next()) {
 				UsersVO user = new UsersVO();
 
@@ -149,12 +125,14 @@ public class BoardDAOImpl implements BoardDAO {
 
 				usersList.add(user);
 			}
-			rs.close();
+			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			System.out.println("[ ERROR ] : BoardDAOImpl - selectUsers() SQL 확인하세요.");
 			e.printStackTrace();
 		} finally {
-			disconnect();
+			close(rs);
+			close(pstmt);
+			close(conn);
 		}
 
 		return usersList;
@@ -162,14 +140,18 @@ public class BoardDAOImpl implements BoardDAO {
 
 	@Override
 	public ArrayList<FilesVO> selectFiles() throws Exception {
-		connect();
+		
+		Connection conn = getConnection();
 		ArrayList<FilesVO> filesList = new ArrayList<FilesVO>();
 
 		String sql = "SELECT * FROM FILES";
 
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+
 		try {
 			pstmt = conn.prepareStatement(sql);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next()) {
 				FilesVO file = new FilesVO();
 
@@ -187,15 +169,65 @@ public class BoardDAOImpl implements BoardDAO {
 
 				filesList.add(file);
 			}
-			rs.close();
+			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			System.out.println("[ ERROR ] : BoardDAOImpl - selectFiles() SQL 확인하세요.");
 			e.printStackTrace();
 		} finally {
-			disconnect();
+			close(rs);
+			close(pstmt);
+			close(conn);
 		}
 
 		return filesList;
+	}
+
+	
+	// 회원가입
+	@Override
+	public int insertUser(UsersVO usersVO) {
+		
+		Connection conn = getConnection();
+		
+		String sql = " INSERT INTO USERS (USER_CODE, USERID, PASSWORD, NAME) VALUES(SEQ_USERS_USER_CODE.NEXTVAL, ?, ?, ?) ";
+		
+		PreparedStatement pstmt = null;
+		int res = 0;
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, usersVO.getUSERID());
+			pstmt.setString(2, usersVO.getPASSWORD());
+			pstmt.setString(3, usersVO.getNAME());
+			
+			res = pstmt.executeUpdate();
+			
+			if(res > 0) {
+				commit(conn);
+			}
+			
+		} catch (SQLException e) {
+			System.out.println("[ ERROR ] : BoardDAOImpl - insertUser() SQL 확인하세요.");
+			e.printStackTrace();
+		} finally {
+			close(pstmt);
+			close(conn);
+		}
+		
+		return res;
+	}
+
+	@Override
+	public int updateUser(UsersVO usersVO) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int deleteUser(UsersVO usersVO) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }

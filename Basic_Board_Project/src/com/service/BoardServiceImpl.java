@@ -58,9 +58,12 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
-	public void insertData() {
-		// TODO Auto-generated method stub
-
+	public boolean insertUser(UsersVO usersVO) {
+		if(dao.insertUser(usersVO) > 0) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	@Override

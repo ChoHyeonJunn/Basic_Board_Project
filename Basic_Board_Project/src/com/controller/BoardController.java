@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -53,30 +54,56 @@ public class BoardController extends HttpServlet {
 
 		switch (action) {
 		case "listAll":
-			// listAllData();
-			request.setAttribute("usersList", boardService.selectUsersListData());
-			request.setAttribute("boardsList", boardService.selectBoardsListData());
-			request.setAttribute("commentsList", boardService.selectCommentsListData());
-			request.setAttribute("filesList", boardService.selectFilesListData());
-			view = "/Board/selectAll.jsp";
+			listAllUsers();
+//			request.setAttribute("usersList", boardService.selectUsersListData());
+//			request.setAttribute("boardsList", boardService.selectBoardsListData());
+//			request.setAttribute("commentsList", boardService.selectCommentsListData());
+//			request.setAttribute("filesList", boardService.selectFilesListData());
+//			view = "/Board/selectAll.jsp";
 			break;
 		case "insert":
-			// insertData();
+			insertUser();
+			listAllUsers();
 			break;
 		case "edit":
-			// viewEdit();
 			break;
 		case "update":
-			// updateData();
 			break;
 		case "delete":
-			// deleteData();
 			break;
 		}
 
 		RequestDispatcher dispatcher = request.getRequestDispatcher(view);
 		dispatcher.forward(request, response);
 		response.getWriter().append("Served at: ").append(request.getContextPath());
+	}
+	
+	// 회원 리스트 전체 출력
+	public void listAllUsers() {
+
+		List<UsersVO> usersList = null;
+		try {
+			usersList =  boardService.selectUsersListData();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}			
+		request.setAttribute("usersList", usersList);
+		view = "/Board/selectAllUsers.jsp";
+	}
+	
+	// 회원가입
+	private void insertUser() throws IOException {
+		UsersVO user = new UsersVO();
+		
+		user.setUSERID(request.getParameter("USERID"));
+		user.setPASSWORD(request.getParameter("PASSWORD"));
+		user.setNAME(request.getParameter("NAME"));
+		
+		if(boardService.insertUser(user)) {
+			System.out.println("USERS DB 입력 성공!");
+		} else {
+			throw new IOException("USERS DB 입력 오류");
+		}
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)

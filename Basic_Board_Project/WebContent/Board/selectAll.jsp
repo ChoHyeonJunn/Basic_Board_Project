@@ -13,6 +13,9 @@
 </head>
 <body>
 	<h1>Users Data</h1>
+	
+	<a href="/Basic_Board_Project/Board/insertUser.jsp" class="btn btn-info">회원가입</a>
+	
 	<table>
 		<thead>
 			<tr>
