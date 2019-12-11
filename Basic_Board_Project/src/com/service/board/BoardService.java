@@ -1,23 +1,22 @@
-package com.service;
+package com.service.board;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import com.VO.BoardsVO;
 import com.VO.CommentsVO;
 import com.VO.FilesVO;
-import com.VO.UsersVO;
 
 public interface BoardService {
+
+	@SuppressWarnings("rawtypes")
+	public Map<String, ArrayList> selectAllData();
 
 	public ArrayList<BoardsVO> selectBoardsListData();
 
 	public ArrayList<CommentsVO> selectCommentsListData();
 
-	public ArrayList<UsersVO> selectUsersListData();
-
 	public ArrayList<FilesVO> selectFilesListData();
-
-	public boolean insertUser(UsersVO usersVO);
 
 	public void viewEdit();
 

@@ -1,4 +1,4 @@
-<%@page import="com.controller.BoardController"%>
+<%@page import="com.controller.board.BoardController"%>
 <%@ page language="java" contentType="text/html; charset=utf-8"
 	pageEncoding="utf-8"%>
 
@@ -14,7 +14,7 @@
 <body>
 	<h1>Users Data</h1>
 	
-	<a href="/Basic_Board_Project/Board/insertUser.jsp" class="btn btn-info">회원가입</a>
+	<a href="/Basic_Board_Project/User/insertUser.jsp" class="btn btn-info">회원가입</a>
 	
 	<table>
 		<thead>

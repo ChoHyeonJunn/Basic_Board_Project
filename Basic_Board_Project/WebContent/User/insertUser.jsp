@@ -10,7 +10,7 @@
 <H2>BOARD :: New Entry</H2>
 <HR>
 <a href="javascript:history.go(-1)"  class="btn btn-info">돌아가기</a> <P>
-<form name=form1 method=post action="/Basic_Board_Project/BoardController">
+<form name=form1 method=post action="/Basic_Board_Project/UserController">
 <input type=hidden name="action" value="insert">
 
 <div class="form-group">
