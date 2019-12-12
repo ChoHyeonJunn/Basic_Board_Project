@@ -14,12 +14,13 @@
 		<P>
 		<H2>USER :: 회원가입</H2>
 		<HR>
-		<form name=form1 method=post action="/Basic_Board_Project/UserController">
+		<form name=form1 method=post action="/Basic_Board_Project/UserController?action=insert">
 			<input type=hidden name="action" value="insert">
 
 			<div class="form-group">
-				<label for="USERID">ID : </label>
-				<input type="text" class="form-control" name="USERID">
+				<label for="USERID">ID </label>
+					<input type="text" class="form-control" id="USERID" name="USERID">
+			<div class="check_font" id="id_check"></div>	<!-- 경고문이 들어갈 공간 -->
 			</div>
 
 			<div class="form-group">

@@ -9,6 +9,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.DAO.user.UserDAO;
 import com.DAO.user.UserDAOImpl;
@@ -44,15 +45,26 @@ public class UserController extends HttpServlet {
 		String action = request.getParameter("action");
 
 		if (action == null) {
-			action = "listAll";
+			action = "login";
 		}
 
 		switch (action) {
-		case "listAll":
-			break;
+		
+		// 회원가입
 		case "insert":
 			insertUser();
 			break;
+		
+		// 로그인
+		case "login":
+			login();
+			break;
+		
+		// 로그아웃
+		case "logout":
+			logout();
+			break;
+			
 		case "edit":
 			break;
 		case "update":
@@ -76,10 +88,55 @@ public class UserController extends HttpServlet {
 
 		if (userService.insertUser(user)) {
 			System.out.println("USERS DB 입력 성공!");
-			view = "/Board/login.jsp";
+			view = "/User/login.jsp";
 		} else {
 			throw new IOException("USERS DB 입력 오류");
 		}
+	}
+	
+	// 로그인
+	private void login() {
+		
+		UsersVO requestUser = new UsersVO();
+
+		System.out.println(request.getParameter("USERID"));
+		System.out.println(request.getParameter("PASSWORD"));
+		
+		requestUser.setUSERID(request.getParameter("USERID"));
+		requestUser.setPASSWORD(request.getParameter("PASSWORD"));
+		
+		UsersVO loginUser = userService.loginCheck(requestUser);
+		System.out.println(loginUser);
+		
+		if(loginUser.getStatus() == 1) {	// 로그인 성공
+			
+			view = "/User/boardList.jsp";
+			HttpSession session = request.getSession();
+			session.setAttribute("loginUser", loginUser);
+	
+		} else {	// 로그인 실패
+			
+			String msg;
+			
+			if(loginUser.getStatus() == 0) {	// 패스워드 오류
+				msg = "패스워드를 잘못 입력하셨습니다.";
+			} else {
+				msg = "존재하지 않는 아이디입니다.";
+			}
+			
+			request.setAttribute("msg", msg);
+			
+			System.out.println(loginUser.getStatus());
+			
+			//view = "/User/loginErrorPage.jsp";
+		}
+	}
+	
+	// 로그아웃
+	private void logout() {
+		// 세션 해제!
+		request.getSession().invalidate();
+		view = "/User/login.jsp";
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)

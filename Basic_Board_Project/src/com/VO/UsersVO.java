@@ -8,8 +8,8 @@ public class UsersVO {
 	private String USERID;
 	private String PASSWORD;
 	private String NAME;
-
 	private Date CREATE_DATE;
+	private int status = 99; // 로그인 성공 실패 여부 (1이면 성공 / 0이면 실패)
 
 	public UsersVO() {
 		super();
@@ -64,4 +64,21 @@ public class UsersVO {
 		CREATE_DATE = cREATE_DATE;
 	}
 
+	
+	
+	
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
+	}
+
+	@Override
+	public String toString() {
+		return "UsersVO [USER_CODE=" + USER_CODE + ", USERID=" + USERID + ", PASSWORD=" + PASSWORD + ", NAME=" + NAME
+				+ ", CREATE_DATE=" + CREATE_DATE + ", status=" + status + "]";
+	}
+	
 }
