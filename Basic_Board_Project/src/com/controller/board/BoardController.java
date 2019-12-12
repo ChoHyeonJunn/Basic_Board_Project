@@ -33,8 +33,7 @@ public class BoardController extends HttpServlet {
 		super();
 	}
 
-	private void processRequest(HttpServletRequest request, HttpServletResponse response)
-			throws IOException, ServletException {
+	private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		this.request = request;
 		this.response = response;
 

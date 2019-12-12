@@ -36,7 +36,7 @@ public class UserController extends HttpServlet {
 			throws IOException, ServletException {
 		this.request = request;
 		this.response = response;
-System.out.println("userController");
+		System.out.println("userController");
 		request.setCharacterEncoding("utf-8");
 		response.setContentType("text/html;charset=utf-8");
 
@@ -91,12 +91,12 @@ System.out.println("userController");
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		response.getWriter().append("Served at: ").append(request.getContextPath());
+		processRequest(request, response);
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		doGet(request, response);
+		processRequest(request, response);
 	}
 
 }

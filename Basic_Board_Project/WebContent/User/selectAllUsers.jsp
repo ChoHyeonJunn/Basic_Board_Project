@@ -8,7 +8,7 @@
 <html>
 <head>
 <meta charset="EUC-KR">
-<title>회원 정보</title>
+<title>전체 회원 정보</title>
 </head>
 <body>
 <h1>Users Data</h1>
