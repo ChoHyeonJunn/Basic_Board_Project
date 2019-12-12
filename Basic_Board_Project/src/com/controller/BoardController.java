@@ -1,4 +1,4 @@
-package com.controller.user;
+package com.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -10,14 +10,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.DAO.user.UserDAO;
-import com.DAO.user.UserDAOImpl;
-import com.VO.UsersVO;
+import com.service.board.BoardService;
+import com.service.board.BoardServiceImpl;
 import com.service.user.UserService;
 import com.service.user.UserServiceImpl;
 
-@WebServlet("/UserController")
-public class UserController extends HttpServlet {
+@WebServlet("/BoardController")
+public class BoardController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	private HttpServletRequest request;
@@ -25,18 +24,17 @@ public class UserController extends HttpServlet {
 	private String view;
 	private PrintWriter out;
 
-	private UserDAO dao = new UserDAOImpl();
+	private BoardService boardService = new BoardServiceImpl();
 	private UserService userService = new UserServiceImpl();
 
-	public UserController() {
+	public BoardController() {
 		super();
 	}
 
-	private void processRequest(HttpServletRequest request, HttpServletResponse response)
-			throws IOException, ServletException {
+	private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		this.request = request;
 		this.response = response;
-		System.out.println("userController");
+
 		request.setCharacterEncoding("utf-8");
 		response.setContentType("text/html;charset=utf-8");
 
@@ -44,16 +42,13 @@ public class UserController extends HttpServlet {
 		String action = request.getParameter("action");
 
 		if (action == null) {
-			action = "listAll";
+			action = "listBoard";
 		}
 
 		switch (action) {
-		case "listAll":
-			listAllUsers();
+		case "listBoard":
 			break;
 		case "insert":
-			insertUser();
-			listAllUsers();
 			break;
 		case "edit":
 			break;
@@ -66,27 +61,6 @@ public class UserController extends HttpServlet {
 		RequestDispatcher dispatcher = request.getRequestDispatcher(view);
 		dispatcher.forward(request, response);
 		response.getWriter().append("Served at: ").append(request.getContextPath());
-	}
-
-	// 회원 리스트 전체 출력
-	public void listAllUsers() {
-		request.setAttribute("usersList", userService.selectUsersListData());
-		view = "/User/selectAllUsers.jsp";
-	}
-
-	// 회원가입
-	private void insertUser() throws IOException {
-		UsersVO user = new UsersVO();
-
-		user.setUSERID(request.getParameter("USERID"));
-		user.setPASSWORD(request.getParameter("PASSWORD"));
-		user.setNAME(request.getParameter("NAME"));
-
-		if (userService.insertUser(user)) {
-			System.out.println("USERS DB 입력 성공!");
-		} else {
-			throw new IOException("USERS DB 입력 오류");
-		}
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)

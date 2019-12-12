@@ -1,4 +1,4 @@
-package com.controller.board;
+package com.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -10,15 +10,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.DAO.board.BoardDAO;
-import com.DAO.board.BoardDAOImpl;
-import com.service.board.BoardService;
-import com.service.board.BoardServiceImpl;
+import com.DAO.user.UserDAO;
+import com.DAO.user.UserDAOImpl;
+import com.VO.UsersVO;
 import com.service.user.UserService;
 import com.service.user.UserServiceImpl;
 
-@WebServlet("/BoardController")
-public class BoardController extends HttpServlet {
+@WebServlet("/UserController")
+public class UserController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	private HttpServletRequest request;
@@ -26,17 +25,18 @@ public class BoardController extends HttpServlet {
 	private String view;
 	private PrintWriter out;
 
-	private BoardService boardService = new BoardServiceImpl();
+	private UserDAO dao = new UserDAOImpl();
 	private UserService userService = new UserServiceImpl();
 
-	public BoardController() {
+	public UserController() {
 		super();
 	}
 
-	private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+	private void processRequest(HttpServletRequest request, HttpServletResponse response)
+			throws IOException, ServletException {
 		this.request = request;
 		this.response = response;
-
+		System.out.println("userController");
 		request.setCharacterEncoding("utf-8");
 		response.setContentType("text/html;charset=utf-8");
 
@@ -49,9 +49,9 @@ public class BoardController extends HttpServlet {
 
 		switch (action) {
 		case "listAll":
-			listAllData();
 			break;
 		case "insert":
+			insertUser();
 			break;
 		case "edit":
 			break;
@@ -66,13 +66,19 @@ public class BoardController extends HttpServlet {
 		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
-	private void listAllData() {
-		request.setAttribute("usersList", userService.selectUsersListData());
-		request.setAttribute("boardsList", boardService.selectBoardsListData());
-		request.setAttribute("commentsList", boardService.selectCommentsListData());
-		request.setAttribute("filesList", boardService.selectFilesListData());
-		view = "/Board/selectAll.jsp";
+	// 회원가입
+	private void insertUser() throws IOException {
+		UsersVO user = new UsersVO();
 
+		user.setUSERID(request.getParameter("USERID"));
+		user.setPASSWORD(request.getParameter("PASSWORD"));
+		user.setNAME(request.getParameter("NAME"));
+
+		if (userService.insertUser(user)) {
+			System.out.println("USERS DB 입력 성공!");
+		} else {
+			throw new IOException("USERS DB 입력 오류");
+		}
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
