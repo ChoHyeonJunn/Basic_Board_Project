@@ -30,6 +30,7 @@ public class UserServiceImpl implements UserService {
 		if(result == 1) {	// 로그인 성공
 		
 			loginUser = dao.selectOneUser(user);
+			loginUser.setStatus(1);
 		
 		} else {
 			

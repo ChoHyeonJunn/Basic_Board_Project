@@ -98,19 +98,15 @@ public class UserController extends HttpServlet {
 	private void login() {
 		
 		UsersVO requestUser = new UsersVO();
-
-		System.out.println(request.getParameter("USERID"));
-		System.out.println(request.getParameter("PASSWORD"));
 		
 		requestUser.setUSERID(request.getParameter("USERID"));
 		requestUser.setPASSWORD(request.getParameter("PASSWORD"));
 		
 		UsersVO loginUser = userService.loginCheck(requestUser);
-		System.out.println(loginUser);
 		
 		if(loginUser.getStatus() == 1) {	// 로그인 성공
 			
-			view = "/User/boardList.jsp";
+			view = "/Board/boardList.jsp";
 			HttpSession session = request.getSession();
 			session.setAttribute("loginUser", loginUser);
 	
@@ -126,9 +122,7 @@ public class UserController extends HttpServlet {
 			
 			request.setAttribute("msg", msg);
 			
-			System.out.println(loginUser.getStatus());
-			
-			//view = "/User/loginErrorPage.jsp";
+			view = "/User/loginErrorPage.jsp";
 		}
 	}
 	

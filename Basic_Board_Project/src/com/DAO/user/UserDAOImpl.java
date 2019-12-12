@@ -125,9 +125,6 @@ public class UserDAOImpl extends JDBCTemplate implements UserDAO {
 				PASSWORD = rs.getString("PASSWORD");
 			}
 			
-			System.out.println(USERID);
-			System.out.println(PASSWORD);
-			
 			if(usersVO.getUSERID().equals(USERID) && usersVO.getPASSWORD().equals(PASSWORD)) {
 				// 로그인 성공
 				res = 1;
@@ -176,9 +173,7 @@ public class UserDAOImpl extends JDBCTemplate implements UserDAO {
 				user.setNAME(rs.getString("NAME"));
 				user.setCREATE_DATE(rs.getDate("CREATE_DATE"));
 			}
-			
-			System.out.println(user.toString());
-						
+									
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
