@@ -10,6 +10,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.DAO.board.BoardDAO;
+import com.DAO.board.BoardDAOImpl;
+import com.VO.BoardsVO;
+import com.VO.UsersVO;
 import com.service.board.BoardService;
 import com.service.board.BoardServiceImpl;
 import com.service.user.UserService;
@@ -25,13 +29,13 @@ public class BoardController extends HttpServlet {
 	private PrintWriter out;
 
 	private BoardService boardService = new BoardServiceImpl();
-	private UserService userService = new UserServiceImpl();
 
 	public BoardController() {
 		super();
 	}
 
-	private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+	private void processRequest(HttpServletRequest request, HttpServletResponse response)
+			throws IOException, ServletException {
 		this.request = request;
 		this.response = response;
 
@@ -47,6 +51,7 @@ public class BoardController extends HttpServlet {
 
 		switch (action) {
 		case "listBoard":
+			selectList();
 			break;
 		case "insert":
 			break;
@@ -61,6 +66,14 @@ public class BoardController extends HttpServlet {
 		RequestDispatcher dispatcher = request.getRequestDispatcher(view);
 		dispatcher.forward(request, response);
 		response.getWriter().append("Served at: ").append(request.getContextPath());
+	}
+
+	// 게시글 리스트
+	private void selectList() throws IOException {
+		
+		request.setAttribute("boardsList", boardService.selectBoardsListData());
+		
+		view = "/Board/boardList.jsp";
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)

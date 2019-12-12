@@ -14,18 +14,17 @@
 		<P>
 		<H2>USER :: 회원가입</H2>
 		<HR>
-		<form name=form1 method=post
-			action="/Basic_Board_Project/UserController">
+		<form name=form1 method=post action="/Basic_Board_Project/UserController">
 			<input type=hidden name="action" value="insert">
 
 			<div class="form-group">
-				<label for="USERID">ID : </label> <input type="text"
-					class="form-control" name="USERID">
+				<label for="USERID">ID : </label>
+				<input type="text" class="form-control" name="USERID">
 			</div>
 
 			<div class="form-group">
-				<label for="PASSWORD">PW : </label> <input type="password"
-					class="form-control" name="PASSWORD">
+				<label for="PASSWORD">PW : </label>
+				<input type="password" class="form-control" name="PASSWORD">
 			</div>
 
 			<div class="form-group">

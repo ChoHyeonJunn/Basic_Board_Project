@@ -76,6 +76,7 @@ public class UserController extends HttpServlet {
 
 		if (userService.insertUser(user)) {
 			System.out.println("USERS DB 입력 성공!");
+			view = "/Board/login.jsp";
 		} else {
 			throw new IOException("USERS DB 입력 오류");
 		}
