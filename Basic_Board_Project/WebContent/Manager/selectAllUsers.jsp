@@ -1,4 +1,4 @@
-<%@page import="com.controller.user.UserController"%>
+<%@page import="com.controller.UserController"%>
 <%@ page language="java" contentType="text/html; charset=utf-8"
 	pageEncoding="utf-8"%>
 
@@ -11,18 +11,20 @@
 <title>전체 회원 정보</title>
 </head>
 <body>
-<h1>Users Data</h1>
-	
-	<a href="/Basic_Board_Project/User/insertUser.jsp" class="btn btn-info">회원가입</a>
-	
+	<a href="/Basic_Board_Project/ManagerController?action=listAllDatas"
+		class="btn btn-info">전체 데이터 정보</a>
+	<a href="/Basic_Board_Project/ManagerController?action=listAllUsers"
+		class="btn btn-info">전체 회원 정보</a>
+
+	<h1>Users Data</h1>
 	<table>
 		<thead>
 			<tr>
-				<th> USER_CODE</th>
-				<th> USERID</th>
-				<th> PASSWORD</th>
-				<th> NAME</th>
-				<th> CREATE_DATE</th>
+				<th>USER_CODE</th>
+				<th>USERID</th>
+				<th>PASSWORD</th>
+				<th>NAME</th>
+				<th>CREATE_DATE</th>
 			</tr>
 		</thead>
 
@@ -36,6 +38,6 @@
 			</tr>
 		</c:forEach>
 	</table>
-	
+
 </body>
 </html>

@@ -55,12 +55,12 @@ public class ManagerController extends HttpServlet {
 		String action = request.getParameter("action");
 
 		if (action == null) {
-			action = "listAllData";
+			action = "listAllDatas";
 		}
 
 		switch (action) {
-		case "listAllData":
-			listAllData();
+		case "listAllDatas":
+			listAllDatas();
 			break;
 		case "listAllUsers":
 			listAllUsers();
@@ -72,7 +72,7 @@ public class ManagerController extends HttpServlet {
 		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
-	private void listAllData() {
+	private void listAllDatas() {
 		@SuppressWarnings("rawtypes")
 		Map<String, ArrayList> selectAllDataMap = managerService.selectAllData();
 
@@ -80,14 +80,14 @@ public class ManagerController extends HttpServlet {
 		request.setAttribute("boardsList", selectAllDataMap.get("boardsList"));
 		request.setAttribute("commentsList", selectAllDataMap.get("commentsList"));
 		request.setAttribute("filesList", selectAllDataMap.get("filesList"));
-		view = "/Board/selectAll.jsp";
+		view = "/Manager/selectAllDatas.jsp";
 
 	}
 
 	// 회원 리스트 전체 출력
 	public void listAllUsers() {
 		request.setAttribute("usersList", managerService.selectUsersListData());
-		view = "/User/selectAllUsers.jsp";
+		view = "/Manager/selectAllUsers.jsp";
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)

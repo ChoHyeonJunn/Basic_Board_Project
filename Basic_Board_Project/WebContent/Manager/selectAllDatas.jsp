@@ -1,4 +1,4 @@
-<%@page import="com.controller.board.BoardController"%>
+<%@page import="com.controller.BoardController"%>
 <%@ page language="java" contentType="text/html; charset=utf-8"
 	pageEncoding="utf-8"%>
 
@@ -12,18 +12,20 @@
 <title>Select All Data</title>
 </head>
 <body>
+	<a href="/Basic_Board_Project/ManagerController?action=listAllDatas"
+		class="btn btn-info">전체 데이터 정보</a>
+	<a href="/Basic_Board_Project/ManagerController?action=listAllUsers"
+		class="btn btn-info">전체 회원 정보</a>
+		
 	<h1>Users Data</h1>
-	
-	<a href="/Basic_Board_Project/User/insertUser.jsp" class="btn btn-info">회원가입</a>
-	
 	<table>
 		<thead>
 			<tr>
-				<th> USER_CODE</th>
-				<th> USERID</th>
-				<th> PASSWORD</th>
-				<th> NAME</th>
-				<th> CREATE_DATE</th>
+				<th>USER_CODE</th>
+				<th>USERID</th>
+				<th>PASSWORD</th>
+				<th>NAME</th>
+				<th>CREATE_DATE</th>
 			</tr>
 		</thead>
 
@@ -43,13 +45,13 @@
 	<table>
 		<thead>
 			<tr>
-				<th> BOARD_CODE</th>
-				<th> USER_CODE</th>
-				<th> TITLE</th>
-				<th> CONTEXT</th>
-				<th> COUNT_VIEW</th>
-				<th> CREATE_DATE</th>
-				<th> UPDATE_DATE</th>
+				<th>BOARD_CODE</th>
+				<th>USER_CODE</th>
+				<th>TITLE</th>
+				<th>CONTEXT</th>
+				<th>COUNT_VIEW</th>
+				<th>CREATE_DATE</th>
+				<th>UPDATE_DATE</th>
 			</tr>
 		</thead>
 
@@ -71,12 +73,12 @@
 	<table>
 		<thead>
 			<tr>
-				<th> BOARD_CODE</th>
-				<th> USER_CODE</th>
-				<th> CONTEXT</th>
-				<th> COUNT_GOOD</th>
-				<th> COUNT_BAD</th>
-				<th> CREATE_DATE</th>
+				<th>BOARD_CODE</th>
+				<th>USER_CODE</th>
+				<th>CONTEXT</th>
+				<th>COUNT_GOOD</th>
+				<th>COUNT_BAD</th>
+				<th>CREATE_DATE</th>
 			</tr>
 		</thead>
 
@@ -97,15 +99,15 @@
 	<table>
 		<thead>
 			<tr>
-				<th> FILE_CODE</th>
-				<th> BOARD_CODE</th>
-				<th> USER_CODE</th>
-				<th> FILE_ORIGINAL_NAME</th>
-				<th> FILE_STORED_NAME</th>
-				<th> FILE_PATH</th>
-				<th> FILE_SIZE</th>
-				<th> CREATE_DATE</th>
-				<th >DEL_YN</th>
+				<th>FILE_CODE</th>
+				<th>BOARD_CODE</th>
+				<th>USER_CODE</th>
+				<th>FILE_ORIGINAL_NAME</th>
+				<th>FILE_STORED_NAME</th>
+				<th>FILE_PATH</th>
+				<th>FILE_SIZE</th>
+				<th>CREATE_DATE</th>
+				<th>DEL_YN</th>
 			</tr>
 		</thead>
 
