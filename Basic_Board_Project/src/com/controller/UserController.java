@@ -106,7 +106,7 @@ public class UserController extends HttpServlet {
 		
 		if(loginUser.getStatus() == 1) {	// 로그인 성공
 			
-			view = "/Board/boardList.jsp";
+			view = "/BoardController?action=listBoard";	//다시 BoardController로 액션 보내기!
 			HttpSession session = request.getSession();
 			session.setAttribute("loginUser", loginUser);
 	
@@ -130,7 +130,7 @@ public class UserController extends HttpServlet {
 	private void logout() {
 		// 세션 해제!
 		request.getSession().invalidate();
-		view = "/User/login.jsp";
+		view = "/Board/boardList.jsp";
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)

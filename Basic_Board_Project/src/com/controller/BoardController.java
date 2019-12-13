@@ -10,14 +10,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.DAO.board.BoardDAO;
-import com.DAO.board.BoardDAOImpl;
 import com.VO.BoardsVO;
-import com.VO.UsersVO;
 import com.service.board.BoardService;
 import com.service.board.BoardServiceImpl;
-import com.service.user.UserService;
-import com.service.user.UserServiceImpl;
 
 @WebServlet("/BoardController")
 public class BoardController extends HttpServlet {
@@ -54,6 +49,8 @@ public class BoardController extends HttpServlet {
 			selectList();
 			break;
 		case "insert":
+			insertBoard();
+			selectList();
 			break;
 		case "edit":
 			break;
@@ -70,10 +67,25 @@ public class BoardController extends HttpServlet {
 
 	// 게시글 리스트
 	private void selectList() throws IOException {
-		
-		request.setAttribute("boardsList", boardService.selectBoardsListData());
-		
+
+		request.setAttribute("boardList", boardService.selectBoardsListData());
+
 		view = "/Board/boardList.jsp";
+	}
+
+	// 게시글 등록
+	private void insertBoard() {
+		BoardsVO insertBoard = new BoardsVO();
+//		System.out.println(request.getParameter("NAME"));
+//		System.out.println(request.getParameter("USER_CODE"));
+//		System.out.println(request.getParameter("TITLE"));
+//		System.out.println(request.getParameter("CONTEXT"));
+
+		insertBoard.setUSER_CODE(Integer.parseInt(request.getParameter("USER_CODE")));
+		insertBoard.setTITLE(request.getParameter("TITLE"));
+		insertBoard.setCONTEXT(request.getParameter("CONTEXT"));
+
+		boardService.insertBoard(insertBoard);
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)

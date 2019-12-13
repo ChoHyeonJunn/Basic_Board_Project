@@ -168,6 +168,7 @@ public class UserDAOImpl extends JDBCTemplate implements UserDAO {
 			if(rs.next()) {
 				user = new UsersVO();
 
+				user.setUSER_CODE(rs.getInt("USER_CODE"));
 				user.setUSERID(rs.getString("USERID"));
 				user.setPASSWORD(rs.getString("PASSWORD"));
 				user.setNAME(rs.getString("NAME"));
