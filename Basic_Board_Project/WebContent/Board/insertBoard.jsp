@@ -25,12 +25,11 @@
 		<%
 			if (NAME != null) {
 		%>
-			<label>작성자 : <%=NAME%> <%=USER_CODE%></label>
+			<label>작성자 : <%=NAME%></label>
 		<%
 			}
 		%>
 	<form action="/Basic_Board_Project/BoardController?action=insert&USER_CODE=<%=USER_CODE%>"	method="post">
-		<input name="NAME" value="<%=NAME%>">
 		<table>
 			<tr>
 				<td>&nbsp;</td>

@@ -52,7 +52,8 @@ public class BoardController extends HttpServlet {
 			insertBoard();
 			selectList();
 			break;
-		case "edit":
+		case "boardContents":
+			boardContents();
 			break;
 		case "update":
 			break;
@@ -64,6 +65,8 @@ public class BoardController extends HttpServlet {
 		dispatcher.forward(request, response);
 		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
+
+
 
 	// 게시글 리스트
 	private void selectList() throws IOException {
@@ -86,6 +89,17 @@ public class BoardController extends HttpServlet {
 		insertBoard.setCONTEXT(request.getParameter("CONTEXT"));
 
 		boardService.insertBoard(insertBoard);
+	}
+	
+	// 글 내용
+	private void boardContents() {
+
+		int BOARD_CODE = Integer.parseInt(request.getParameter("BOARD_CODE"));
+		
+		boardService.increaseCountView(BOARD_CODE);
+		request.setAttribute("boardContents", boardService.selectBoardContents(BOARD_CODE));
+		view = "/Board/boardContents.jsp";
+		
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)

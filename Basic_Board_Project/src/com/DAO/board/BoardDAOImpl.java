@@ -129,4 +129,72 @@ public class BoardDAOImpl extends JDBCTemplate implements BoardDAO {
 		return res;
 	}
 
+	@Override
+	public BoardsVO selectBoardContents(int BOARD_CODE) {
+		Connection conn = getConnection();
+		BoardsVO board = new BoardsVO();
+
+		String sql = "SELECT * FROM BOARDS WHERE BOARD_CODE = " + BOARD_CODE;
+
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+
+		try {
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+
+				board.setBOARD_CODE(rs.getInt("BOARD_CODE"));
+				board.setUSER_CODE(rs.getInt("USER_CODE"));
+				board.setTITLE(rs.getString("TITLE"));
+				board.setCONTEXT(rs.getString("CONTEXT"));
+
+				board.setCOUNT_VIEW(rs.getInt("COUNT_VIEW"));
+				board.setCOUNT_COMMENT(rs.getInt("COUNT_COMMENT"));
+				board.setCREATE_DATE(rs.getDate("CREATE_DATE"));
+				board.setUPDATE_DATE(rs.getDate("UPDATE_DATE"));
+			}
+
+		} catch (SQLException e) {
+			System.out.println("[ ERROR ] : BoardDAOImpl - selectBoards() SQL 확인하세요.");
+			e.printStackTrace();
+		} finally {
+			close(rs);
+			close(pstmt);
+			close(conn);
+		}
+
+		return board;
+	}
+
+	@Override
+	public void increaseCountView(int BOARD_CODE) {
+		Connection con = getConnection();
+		PreparedStatement pstmt = null;
+		int res = 0;
+
+		String sql = " UPDATE BOARDS "
+				+ " SET COUNT_VIEW = COUNT_VIEW + 1 "
+				+ " WHERE BOARD_CODE = ? ";
+		try {
+			pstmt = con.prepareStatement(sql);
+
+			pstmt.setInt(1, BOARD_CODE);
+			
+			res = pstmt.executeUpdate();
+
+			if (res > 0)
+				commit(con);
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			// 5. db 종료
+			close(pstmt);
+			close(con);
+		}
+		
+	}
+
 }

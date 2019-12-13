@@ -27,4 +27,14 @@ public class BoardServiceImpl implements BoardService {
 		return boardDAO.insertBoard(board);
 	}
 
+	@Override
+	public BoardsVO selectBoardContents(int BOARD_CODE) {
+		return boardDAO.selectBoardContents(BOARD_CODE);
+	}
+
+	@Override
+	public void increaseCountView(int BOARD_CODE) {
+		boardDAO.increaseCountView(BOARD_CODE);		
+	}
+
 }
