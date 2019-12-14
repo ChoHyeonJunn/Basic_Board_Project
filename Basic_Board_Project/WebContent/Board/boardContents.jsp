@@ -1,8 +1,18 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
-	pageEncoding="utf-8"%>
+	pageEncoding="utf-8" import="com.VO.UsersVO, com.VO.BoardsVO"%>
 
 <%@ include file="inc_header.html" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
+<%
+	String NAME = null;
+	int USER_CODE = 0;
+	UsersVO loginUser = (UsersVO) session.getAttribute("loginUser");
+	if (loginUser != null){
+		NAME = loginUser.getNAME();
+		USER_CODE = loginUser.getUSER_CODE();	
+	}
+%>
 
 <!DOCTYPE html>
 <html>
@@ -85,11 +95,17 @@
 					<tr align="center">
 						<td width="0">&nbsp;</td>
 						<td colspan="2" width="399">
-							<input type=button value="글쓰기">
-							<input type=button value="답글">
-							<a class="btn btn-dark" href="/Basic_Board_Project/BoardController?action=listBoard">목록</a>
-							<input type=button value="수정"> 
-							<input type=button value="삭제">
+							<a class="btn btn-dark" href="/Basic_Board_Project/BoardController?action=listBoard">목록</a> 
+							<%
+							BoardsVO ELboard =(BoardsVO) request.getAttribute("boardContents");
+							if (USER_CODE == ELboard.getUSER_CODE()) {
+							%>							
+ 							
+ 							<a class="btn btn-dark" href="/Basic_Board_Project/BoardController?action=updateReady&BOARD_CODE=${board.BOARD_CODE}">수정</a>
+							<a class="btn btn-dark" href="/Basic_Board_Project/BoardController?action=delete&BOARD_CODE=${board.BOARD_CODE}">삭제</a>
+							<% 	
+							}
+							%> 
 						<td width="0">&nbsp;</td>
 					</tr>
 				</table>

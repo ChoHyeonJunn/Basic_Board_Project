@@ -17,4 +17,10 @@ public interface BoardService {
 	
 	// 조회수 올리기
 	public void increaseCountView(int BOARD_CODE);
+	
+	// 게시판 수정
+	public void updateBoard(BoardsVO board);
+	
+	// 게시물 삭제
+	public void deleteBoard(int BOARD_CODE);
 }

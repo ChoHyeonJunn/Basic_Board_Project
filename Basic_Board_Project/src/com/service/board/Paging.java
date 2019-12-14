@@ -57,14 +57,14 @@ public class Paging {
 	}
 
 	// 검색을 했을 때 총 페이지의 마지막 번호
-//	public void makeLastPageNum(String kwd) {
-//		BoardDAO dao = new BoardDAOImpl();
-//		int total = dao.getCount(kwd);
-//
-//		if (total % pageCount == 0) {
-//			lastPageNum = (int) Math.floor(total / pageCount);
-//		} else {
-//			lastPageNum = (int) Math.floor(total / pageCount) + 1;
-//		}
-//	}
+	public void makeLastPageNum(int how, String kwd) {
+		BoardDAO dao = new BoardDAOImpl();
+		int total = dao.getCount(how, kwd);
+
+		if (total % pageCount == 0) {
+			lastPageNum = (int) Math.floor(total / pageCount);
+		} else {
+			lastPageNum = (int) Math.floor(total / pageCount) + 1;
+		}
+	}
 }

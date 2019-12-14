@@ -60,6 +60,20 @@
 			}
 		%>
 		<div class="container mx-auto m-5 p-5 bg-ligth shadow">
+			<div id="searchForm">
+				<form>
+					<select name="opt">
+						<option value="0">제목</option>
+						<option value="1">내용</option>
+						<option value="2">제목+내용</option>
+						<option value="3">글쓴이</option>
+					</select> 
+					<input type="text" size="20" name="condition" />
+					&nbsp; 
+					<input type="submit" value="검색" />
+				</form>
+			</div>
+
 			<h1>BOARD :: 목록</h1>
 
 			<table>
@@ -93,8 +107,7 @@
 					<a href="/Basic_Board_Project/BoardController?curPage=${ blockStartNum - 1 }">◀</a>
 				</c:if>
 
-				<c:forEach var="i" begin="${ blockStartNum }"
-					end="${ blockLastNum }">
+				<c:forEach var="i" begin="${ blockStartNum }" end="${ blockLastNum }">
 					<c:choose>
 
 						<c:when test="${ i > lastPageNum }">

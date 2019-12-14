@@ -2,8 +2,6 @@ package com.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -58,15 +56,31 @@ public class BoardController extends HttpServlet {
 		case "boardContents":
 			boardContents();
 			break;
+		case "updateReady":
+			updateReady();
+			break;
 		case "update":
+			update();
+			boardContents();
 			break;
 		case "delete":
+			delete();
+			selectList();
 			break;
+		case "search":
+			search();
+			selectList();
 		}
 
 		RequestDispatcher dispatcher = request.getRequestDispatcher(view);
 		dispatcher.forward(request, response);
 		response.getWriter().append("Served at: ").append(request.getContextPath());
+	}
+
+	private void search() {
+		//request.setAttribute("boardList", boardService.selectBoardsListData());
+		System.out.println(request.getAttribute("opt"));
+		//view = "/Board/boardList.jsp";		
 	}
 
 	// 게시글 리스트
@@ -110,13 +124,33 @@ public class BoardController extends HttpServlet {
 	// 글 내용
 	private void boardContents() {
 		int BOARD_CODE = Integer.parseInt(request.getParameter("BOARD_CODE"));
-		
+
 		boardService.increaseCountView(BOARD_CODE);
 
 		request.setAttribute("boardContents", boardService.selectBoardContents(BOARD_CODE).get("boardsVO"));
 		request.setAttribute("userContents", boardService.selectBoardContents(BOARD_CODE).get("usersVO"));
 		view = "/Board/boardContents.jsp";
 
+	}
+
+	private void updateReady() {
+		int BOARD_CODE = Integer.parseInt(request.getParameter("BOARD_CODE"));
+
+		request.setAttribute("boardContents", boardService.selectBoardContents(BOARD_CODE).get("boardsVO"));
+		view = "/Board/updateBoard.jsp";
+	}
+
+	private void update() {
+		BoardsVO updateBoard = new BoardsVO();
+		updateBoard.setTITLE(request.getParameter("TITLE"));
+		updateBoard.setCONTEXT(request.getParameter("CONTEXT"));
+		updateBoard.setBOARD_CODE(Integer.parseInt(request.getParameter("BOARD_CODE")));
+
+		boardService.updateBoard(updateBoard);
+	}
+
+	private void delete() {
+		boardService.deleteBoard(Integer.parseInt(request.getParameter("BOARD_CODE")));
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)

@@ -54,4 +54,14 @@ public class BoardServiceImpl implements BoardService {
 		boardDAO.increaseCountView(BOARD_CODE);
 	}
 
+	@Override
+	public void updateBoard(BoardsVO board) {
+		boardDAO.updateBoard(board);
+	}
+
+	@Override
+	public void deleteBoard(int BOARD_CODE) {
+		boardDAO.deleteBoard(BOARD_CODE);
+	}
+
 }

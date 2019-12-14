@@ -228,5 +228,91 @@ public class BoardDAOImpl extends JDBCTemplate implements BoardDAO {
 		
 	}
 
+	@Override
+	public int updateBoard(BoardsVO board) {
+
+		Connection con = getConnection();
+		PreparedStatement pstmt = null;
+		int res = 0;
+
+		String sql = "UPDATE BOARDS SET TITLE = ?, CONTEXT = ?, UPDATE_DATE = SYSDATE WHERE BOARD_CODE = ?";
+
+		try {
+			pstmt = con.prepareStatement(sql);
+
+			pstmt.setString(1, board.getTITLE());
+			pstmt.setString(2, board.getCONTEXT());
+			pstmt.setInt(3, board.getBOARD_CODE());
+
+			res = pstmt.executeUpdate();
+			if (res > 0)
+				commit(con);
+		} catch (SQLException e) {
+			System.out.println("[ ERROR ] : BoardDAOImpl - updateBoard() SQL 확인하세요.");
+			e.printStackTrace();
+		} finally {
+			close(pstmt);
+			close(con);
+		}
+
+		return res;
+	}
+
+	@Override
+	public int deleteBoard(int BOARD_CODE) {
+		Connection con = getConnection();
+		PreparedStatement pstmt = null;
+		int res = 0;
+
+		String sql = " DELETE FROM BOARDS WHERE BOARD_CODE = ? ";
+
+		try {
+			pstmt = con.prepareStatement(sql);
+
+			pstmt.setInt(1, BOARD_CODE);
+
+			res = pstmt.executeUpdate();
+			if (res > 0)
+				commit(con);
+		} catch (SQLException e) {
+			System.out.println("[ ERROR ] : BoardDAOImpl - deleteBoard() SQL 확인하세요.");
+			e.printStackTrace();
+		} finally {
+			close(pstmt);
+			close(con);
+		}
+
+		return res;
+	}
+
+	@Override
+	public int getCount(int how, String kwd) {
+		Connection conn = getConnection();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		int res = 0;
+
+		String sql = "SELECT COUNT(*) CNT FROM BOARDS";
+		try {
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				res = rs.getInt("CNT");
+			}
+
+		} catch (SQLException e) {
+			System.out.println("[ ERROR ] : BoardDAOImpl - getCount() SQL 확인하세요.");
+			e.printStackTrace();
+		} finally {
+			close(rs);
+			close(pstmt);
+			close(conn);
+		}
+
+		return res;
+	}
+
 
 }
