@@ -25,6 +25,7 @@
 					</tr>
 				</table>
 				<table width="413">
+				<c:set var = "user" value="${userContents}"/>
 				<c:set var = "board" value="${boardContents}"/>
 					<tr>
 						<td width="0">&nbsp;</td>
@@ -47,7 +48,7 @@
 					<tr>
 						<td width="0">&nbsp;</td>
 						<td align="center" width="76">이름</td>
-						<td width="319">${board.USER_CODE}</td>
+						<td width="319">${user.NAME}</td>
 						<td width="0">&nbsp;</td>
 					</tr>
 					<tr height="1" bgcolor="#dddddd">

@@ -2,6 +2,8 @@ package com.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -107,11 +109,12 @@ public class BoardController extends HttpServlet {
 
 	// 글 내용
 	private void boardContents() {
-
 		int BOARD_CODE = Integer.parseInt(request.getParameter("BOARD_CODE"));
-
+		
 		boardService.increaseCountView(BOARD_CODE);
-		request.setAttribute("boardContents", boardService.selectBoardContents(BOARD_CODE));
+
+		request.setAttribute("boardContents", boardService.selectBoardContents(BOARD_CODE).get("boardsVO"));
+		request.setAttribute("userContents", boardService.selectBoardContents(BOARD_CODE).get("usersVO"));
 		view = "/Board/boardContents.jsp";
 
 	}

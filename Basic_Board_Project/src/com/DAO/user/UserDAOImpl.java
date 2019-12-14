@@ -186,4 +186,41 @@ public class UserDAOImpl extends JDBCTemplate implements UserDAO {
 		return user;
 	}
 
+	@Override
+	public UsersVO selectOneUser(int USER_CODE) {
+
+		Connection conn = getConnection();
+		
+		String sql = " SELECT * FROM USERS WHERE USER_CODE = ? ";
+		
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		UsersVO user = null;
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, USER_CODE);
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				user = new UsersVO();
+
+				user.setUSER_CODE(rs.getInt("USER_CODE"));
+				user.setUSERID(rs.getString("USERID"));
+				user.setPASSWORD(rs.getString("PASSWORD"));
+				user.setNAME(rs.getString("NAME"));
+				user.setCREATE_DATE(rs.getDate("CREATE_DATE"));
+			}
+									
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(rs);
+			close(pstmt);
+			close(conn);
+		}
+		
+		return user;
+	}
+
 }
