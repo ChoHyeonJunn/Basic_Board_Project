@@ -38,7 +38,7 @@
 		style="height: 10%; with: 100%; padding: 20px; text_align: center;">
 
 		<button id="logout" class="btn btn-info">로그아웃</button>
-		<a href="/Basic_Board_Project/User/updateUser.jsp" class="btn btn-info">회원정보</a> 
+		<a href="/Basic_Board_Project/User/userContents.jsp" class="btn btn-info">회원정보</a> 
 		<a href="/Basic_Board_Project/Board/userBoardList.jsp" class="btn btn-info">내가쓴글</a>
 		<br> 
 		<label><%=NAME%>님 환영합니다.</label> 

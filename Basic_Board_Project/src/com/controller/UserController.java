@@ -26,9 +26,12 @@ public class UserController extends HttpServlet {
 	private String view;
 	private PrintWriter out;
 
-	private UserDAO dao = new UserDAOImpl();
 	private UserService userService = new UserServiceImpl();
-
+	
+	HttpSession session;
+	String msg;
+	
+	
 	public UserController() {
 		super();
 	}
@@ -64,12 +67,19 @@ public class UserController extends HttpServlet {
 		case "logout":
 			logout();
 			break;
-			
+		
+		// 회원정보 수정 화면
 		case "edit":
+			viewEdit();
 			break;
+		
+		// 회원정보 수정
 		case "update":
+			update();
 			break;
+			
 		case "delete":
+			delete();
 			break;
 		}
 
@@ -93,7 +103,8 @@ public class UserController extends HttpServlet {
 			throw new IOException("USERS DB 입력 오류");
 		}
 	}
-	
+
+
 	// 로그인
 	private void login() {
 		
@@ -107,13 +118,11 @@ public class UserController extends HttpServlet {
 		if(loginUser.getStatus() == 1) {	// 로그인 성공
 			
 			view = "/BoardController?action=listBoard";	//다시 BoardController로 액션 보내기!
-			HttpSession session = request.getSession();
+			session = request.getSession();
 			session.setAttribute("loginUser", loginUser);
 	
 		} else {	// 로그인 실패
-			
-			String msg;
-			
+
 			if(loginUser.getStatus() == 0) {	// 패스워드 오류
 				msg = "패스워드를 잘못 입력하셨습니다.";
 			} else {
@@ -131,6 +140,58 @@ public class UserController extends HttpServlet {
 		// 세션 해제!
 		request.getSession().invalidate();
 		view = "/Board/boardList.jsp";
+	}
+	
+	// 회원정보 수정 화면
+	private void viewEdit() {
+		//UsersVO userVO = userService.selectOneUser(Integer.parseInt(request.getParameter("USER_CODE")));
+		UsersVO loginUser = (UsersVO) session.getAttribute("loginUser");		
+		
+		if(!request.getParameter("PASSWORD").equals(loginUser.getPASSWORD())) {
+			msg = "비밀번호가 틀렸습니다.";
+			request.setAttribute("msg", msg);
+			
+			view = "/User/loginErrorPage.jsp";
+		}
+		else {
+			request.setAttribute("user", loginUser);
+			view = "/User/updateUser.jsp";	
+		}
+	}
+	
+	// 회원정보 수정
+	private void update() {
+		
+		UsersVO loginUser = (UsersVO) session.getAttribute("loginUser");	
+		
+		String PASSWORD = loginUser.getPASSWORD();
+		String NAME = loginUser.getNAME();
+		
+		loginUser.setPASSWORD(request.getParameter("PASSWORD"));
+		loginUser.setNAME(request.getParameter("NAME"));
+		
+		if(userService.updateUser(loginUser)) {			
+			System.out.println("update() 성공!");			
+			view = "/User/userContents.jsp";
+
+		} else {
+			System.out.println("[ ERROR ] : UserController - update() 오류");
+			
+			loginUser.setPASSWORD(PASSWORD);
+			loginUser.setNAME(NAME);
+		}
+	}
+	
+	private void delete() {
+		UsersVO loginUser = (UsersVO) session.getAttribute("loginUser");
+
+		if(userService.deleteUser(loginUser.getUSER_CODE())) {
+			System.out.println("delete() 성공!");
+			request.getSession().invalidate();
+			view = "/Board/boardList.jsp";
+		} else {
+			System.out.println("[ ERROR ] : UserController - delete() 오류");
+		}
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)

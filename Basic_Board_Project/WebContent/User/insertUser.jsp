@@ -33,8 +33,8 @@
 					class="form-control" name="NAME">
 			</div>
 
-			<button type="submit" class="btn btn-primary">생성</button>
-			<button type="reset" class="btn btn-warning">리셋</button>
+			<button type="submit" class="btn btn-primary">가입</button>
+			<a class="btn btn-dark" href="javascript:history.go(-1)">취소</a><p>
 		</form>
 
 	</div>
