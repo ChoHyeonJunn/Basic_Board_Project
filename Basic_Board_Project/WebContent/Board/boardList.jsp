@@ -61,16 +61,16 @@
 		%>
 		<div class="container mx-auto m-5 p-5 bg-ligth shadow">
 			<div id="searchForm">
-				<form>
-					<select name="opt">
+				<form action="/Basic_Board_Project/BoardController?action=search" method="post">
+					<select id="opt" name="opt">
 						<option value="0">제목</option>
-						<option value="1">내용</option>
+						<option value="1" selected>내용</option>
 						<option value="2">제목+내용</option>
 						<option value="3">글쓴이</option>
 					</select> 
-					<input type="text" size="20" name="condition" />
+					<input type="text" size="20" name="condition"/>
 					&nbsp; 
-					<input type="submit" value="검색" />
+					<input type="submit" value="검색"/>
 				</form>
 			</div>
 
