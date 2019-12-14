@@ -13,6 +13,9 @@ public interface BoardDAO {
 	// 게시판, 유저 테이블 select
 	public ArrayList<BoardListVO> selectBoardList() throws Exception;
 
+	// 게시물 총 갯수 리턴
+	public int getCount();
+	
 	// 게시판 글쓰기
 	public int insertBoard(BoardsVO board);
 	
@@ -21,5 +24,7 @@ public interface BoardDAO {
 	
 	// 조회수 올리기
 	public void increaseCountView(int BOARD_CODE);
+	
+	
 
 }

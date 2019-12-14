@@ -7,7 +7,7 @@ import com.VO.BoardsVO;
 
 public interface BoardService {
 
-	public ArrayList<BoardListVO> selectBoardsListData();
+	public ArrayList<BoardListVO> selectBoardsListData(int curPage);
 	// 게시판 글쓰기
 	public int insertBoard(BoardsVO board);
 	

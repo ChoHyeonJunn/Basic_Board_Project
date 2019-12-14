@@ -64,7 +64,8 @@ public class BoardDAOImpl extends JDBCTemplate implements BoardDAO {
 
 		String sql = " SELECT U.USER_CODE, U.USERID, U.PASSWORD, U.NAME, U.CREATE_DATE, "
 				+ "        B.BOARD_CODE, B.USER_CODE, B.TITLE, B.CONTEXT, B.COUNT_VIEW, B.COUNT_COMMENT, B.CREATE_DATE, B.UPDATE_DATE, B.DEL_YN "
-				+ " FROM USERS U, BOARDS B " + " WHERE U.USER_CODE = B.USER_CODE ";
+				+ " FROM USERS U, BOARDS B " + " WHERE U.USER_CODE = B.USER_CODE "
+						+ " ORDER BY B.CREATE_DATE DESC";
 
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -98,6 +99,36 @@ public class BoardDAOImpl extends JDBCTemplate implements BoardDAO {
 		return boardList;
 	}
 
+
+	@Override
+	public int getCount() {
+		Connection conn = getConnection();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		int res = 0;
+
+		String sql = "SELECT COUNT(*) CNT FROM BOARDS";
+		try {
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				res = rs.getInt("CNT");
+			}
+
+		} catch (SQLException e) {
+			System.out.println("[ ERROR ] : BoardDAOImpl - getCount() SQL 확인하세요.");
+			e.printStackTrace();
+		} finally {
+			close(rs);
+			close(pstmt);
+			close(conn);
+		}
+
+		return res;
+	}
+	
 	@Override
 	public int insertBoard(BoardsVO board) {
 
@@ -196,5 +227,6 @@ public class BoardDAOImpl extends JDBCTemplate implements BoardDAO {
 		}
 		
 	}
+
 
 }

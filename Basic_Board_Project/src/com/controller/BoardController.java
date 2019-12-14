@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.VO.BoardsVO;
 import com.service.board.BoardService;
 import com.service.board.BoardServiceImpl;
+import com.service.board.Paging;
 
 @WebServlet("/BoardController")
 public class BoardController extends HttpServlet {
@@ -66,12 +67,29 @@ public class BoardController extends HttpServlet {
 		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
-
-
 	// 게시글 리스트
 	private void selectList() throws IOException {
+		Paging paging = new Paging();
 
-		request.setAttribute("boardList", boardService.selectBoardsListData());
+		int curPage = 1;
+
+		paging.makeLastPageNum();
+		paging.makeBlock(curPage);
+
+		if (request.getParameter("curPage") != null) {
+			curPage = Integer.parseInt(request.getParameter("curPage"));
+			paging.makeBlock(curPage);
+			request.setAttribute("curPageNum", curPage);
+		}
+		Integer blockStartNum = paging.getBlockStartNum();
+		Integer blockLastNum = paging.getBlockLastNum();
+		Integer lastPageNum = paging.getLastPageNum();
+
+		request.setAttribute("blockStartNum", blockStartNum);
+		request.setAttribute("blockLastNum", blockLastNum);
+		request.setAttribute("lastPageNum", lastPageNum);
+
+		request.setAttribute("boardList", boardService.selectBoardsListData(curPage));
 
 		view = "/Board/boardList.jsp";
 	}
@@ -79,10 +97,6 @@ public class BoardController extends HttpServlet {
 	// 게시글 등록
 	private void insertBoard() {
 		BoardsVO insertBoard = new BoardsVO();
-//		System.out.println(request.getParameter("NAME"));
-//		System.out.println(request.getParameter("USER_CODE"));
-//		System.out.println(request.getParameter("TITLE"));
-//		System.out.println(request.getParameter("CONTEXT"));
 
 		insertBoard.setUSER_CODE(Integer.parseInt(request.getParameter("USER_CODE")));
 		insertBoard.setTITLE(request.getParameter("TITLE"));
@@ -90,16 +104,16 @@ public class BoardController extends HttpServlet {
 
 		boardService.insertBoard(insertBoard);
 	}
-	
+
 	// 글 내용
 	private void boardContents() {
 
 		int BOARD_CODE = Integer.parseInt(request.getParameter("BOARD_CODE"));
-		
+
 		boardService.increaseCountView(BOARD_CODE);
 		request.setAttribute("boardContents", boardService.selectBoardContents(BOARD_CODE));
 		view = "/Board/boardContents.jsp";
-		
+
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
