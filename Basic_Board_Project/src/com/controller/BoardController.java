@@ -82,15 +82,14 @@ public class BoardController extends HttpServlet {
 		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
-
 	private void search() {
-		//request.setAttribute("boardList", boardService.selectBoardsListData());
+		// request.setAttribute("boardList", boardService.selectBoardsListData());
 		System.out.println("option : " + request.getParameter("opt"));
 		System.out.println("condition : " + request.getParameter("condition"));
-		if(request.getParameter("condition")==""){
+		if (request.getParameter("condition") == "") {
 			return;
 		}
-		//view = "/Board/boardList.jsp";		
+		// view = "/Board/boardList.jsp";
 	}
 
 	// 게시글 리스트
@@ -122,109 +121,99 @@ public class BoardController extends HttpServlet {
 
 	// 게시글 등록 & 파일 첨부
 	private void insertBoard() {
-		System.out.println("user_code : "+Integer.parseInt(request.getParameter("USER_CODE")));
-		System.out.println("title : "+request.getParameter("TITLE"));
-		System.out.println("context : "+request.getParameter("CONTEXT"));
+
+		// 업로드될 경로
+		String filePath = "/File/Upload/";
+
+		// 업로드될 실제 경로 (이클립스 상의 절대경로)
+		String FILE_PATH = request.getSession().getServletContext().getRealPath(filePath);
+		System.out.println("절대경로 : " + FILE_PATH);
+
+		String encoding = "UTF-8";
+		int maxSize = 1024 * 1024 * 5;
+
+		MultipartRequest mr = null;
+
+		try {
+
+			mr = new MultipartRequest(request,
+					FILE_PATH, // 파일이 저장될 폴더
+					maxSize, // 최대 업로드크기 (5MB)
+					encoding, // 인코딩 방식
+					new DefaultFileRenamePolicy() // 동일한 파일명이 존재하면 파일명 뒤에 일련번호를 부여
+			);
+
+		} catch (IOException e1) {
+			System.out.println("[ ERROR ] : BoardController - MultipartRequest 객체 생성 오류");
+			e1.printStackTrace();
+		}
+
+		
 		// 게시글 등록
 		BoardsVO insertBoard = new BoardsVO();
 
 		insertBoard.setUSER_CODE(Integer.parseInt(request.getParameter("USER_CODE")));
-		insertBoard.setTITLE(request.getParameter("TITLE"));
-		insertBoard.setCONTEXT(request.getParameter("CONTEXT"));
+		insertBoard.setTITLE(mr.getParameter("TITLE"));
+		insertBoard.setCONTEXT(mr.getParameter("CONTEXT"));
 
-		if(boardService.insertBoard(insertBoard)) {
+		if (boardService.insertBoard(insertBoard)) {
 			System.out.println("게시물 insert 성공!");
 		} else {
 			System.out.println("[ ERROR ] : BoardController - insertBoard() 게시물 등록 오류");
 		}
-		
 
+		
 		// 파일 첨부
-		// 업로드될 경로
-		String filePath = "/File/Upload/";
-		
-		// 업로드될 실제 경로 (이클립스 상의 절대경로)
-		String FILE_PATH = request.getSession().getServletContext().getRealPath(filePath);
-		System.out.println("절대경로 : " + FILE_PATH);
-		
-		String encoding = "UTF-8";
-		int maxSize = 1024*1024*10;
-		
-		MultipartRequest mr = null;
-		
-		// 사용자가 전달한 파라미터들
-//		Enumeration<?> params = mr.getParameterNames();
-//		
-//		while(params.hasMoreElements()) {
-//			String name = (String) params.nextElement();
-//			String value = mr.getParameter(name);
-//			System.out.println("사용자가 전달한 파라미터 : " + name + "\t" + value + "\n");
-//		}
-		
-		// 업로드된 파일들
-		//Enumeration<?> files = mr.getFileNames();
+		//Enumeration<?> files = mr.getFileNames();	// 다중파일일 경우
 
 		String FILE_ORIGINAL_NAME = null, FILE_STORED_NAME = null, FILE_SIZE = null;
-		
 		String fileType = null;
 		String fileExtend = null;
-		
-		try {
-			// MultipartRequest 객체 생성 순간 = 파일이 서버에 업로드되는 시점
-			mr = new MultipartRequest(
-					request,
-					FILE_PATH,	// 파일을 저장할 폴더
-					maxSize,	// 최대 업로드크기 (10MB)
-					encoding,	// 인코딩 방식
-					new DefaultFileRenamePolicy()	// 동일한 파일명이 존재하면 파일명 뒤에 일련번호를 부여
-					);
-			
-			//while(files.hasMoreElements()) {
-				
-				// 실제 저장된 파일명
-				FILE_STORED_NAME = mr.getFilesystemName("file");
-				
-				if(FILE_STORED_NAME != null) {
 
-					// 원래 파일명
-					FILE_ORIGINAL_NAME = mr.getOriginalFileName("file");
-					
-					// 파일 크기
-					FILE_SIZE = String.valueOf(mr.getFile("file").length());
-					
-					// 파일 타입
-					fileType = mr.getContentType("file");
-					
-					// 파일 확장자
-					fileExtend = FILE_STORED_NAME.substring(FILE_STORED_NAME.lastIndexOf(".")+1);
-				}
-			//}
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
+		//while (files.hasMoreElements()) {
+
+			// 실제 저장된 파일명
+			FILE_STORED_NAME = mr.getFilesystemName("FILE");
+
+			if (FILE_STORED_NAME != null) {
+
+				// 원래 파일명
+				FILE_ORIGINAL_NAME = mr.getOriginalFileName("FILE");
+
+				// 파일 크기
+				FILE_SIZE = String.valueOf(mr.getFile("FILE").length());
+
+				// 파일 타입
+				fileType = mr.getContentType("FILE");
+
+				// 파일 확장자
+				fileExtend = FILE_STORED_NAME.substring(FILE_STORED_NAME.lastIndexOf(".") + 1);
+			}
+		//}
+
 		FilesVO insertFile = new FilesVO();
-		
-		if(FILE_STORED_NAME != null) {
-			
+
+		if (FILE_STORED_NAME != null) {
+
 			insertFile.setUSER_CODE(Integer.parseInt(request.getParameter("USER_CODE")));
 			insertFile.setFILE_ORIGINAL_NAME(FILE_ORIGINAL_NAME);
 			insertFile.setFILE_STORED_NAME(FILE_STORED_NAME);
 			insertFile.setFILE_PATH(FILE_PATH);
 			insertFile.setFILE_SIZE(FILE_SIZE);
-			
-			if(boardService.insertFile(insertFile)) {
-				System.out.println(insertFile.toString() + fileType + fileExtend);
+
+			if (boardService.insertFile(insertFile)) {
+				System.out.println(insertFile.toString() + "\n파일타입 : " + fileType + " 파일확장자명 : " + fileExtend);
 			} else {
 				System.out.println("[ ERROR ] : BoardController - insertBoard() 파일업로드 오류");
 			}
 		}
-		
+
 	}
 
 	// 글 내용
 	private void boardContents() {
+
+		// 게시글 내용
 		int BOARD_CODE = Integer.parseInt(request.getParameter("BOARD_CODE"));
 
 		boardService.increaseCountView(BOARD_CODE);
@@ -232,6 +221,8 @@ public class BoardController extends HttpServlet {
 		request.setAttribute("boardContents", boardService.selectBoardContents(BOARD_CODE).get("boardsVO"));
 		request.setAttribute("userContents", boardService.selectBoardContents(BOARD_CODE).get("usersVO"));
 		view = "/Board/boardContents.jsp";
+
+		// 첨부파일 내용
 
 	}
 
@@ -248,24 +239,22 @@ public class BoardController extends HttpServlet {
 		updateBoard.setCONTEXT(request.getParameter("CONTEXT"));
 		updateBoard.setBOARD_CODE(Integer.parseInt(request.getParameter("BOARD_CODE")));
 
-		if(boardService.updateBoard(updateBoard)) {
+		if (boardService.updateBoard(updateBoard)) {
 			System.out.println("게시물 update 성공!");
 		} else {
 			System.out.println("[ ERROR ] : BoardController - update() 게시물 수정 오류");
 		}
-		
+
 	}
 
 	private void delete() {
-		
-		if(boardService.deleteBoard(Integer.parseInt(request.getParameter("BOARD_CODE")))) {
+
+		if (boardService.deleteBoard(Integer.parseInt(request.getParameter("BOARD_CODE")))) {
 			System.out.println("게시물 update 성공!");
 		} else {
 			System.out.println("[ ERROR ] : BoardController - delete() 게시물 삭제 오류");
 		}
 	}
-	
-	
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {

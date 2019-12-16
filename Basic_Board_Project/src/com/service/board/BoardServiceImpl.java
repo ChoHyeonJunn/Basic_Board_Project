@@ -95,4 +95,12 @@ public class BoardServiceImpl implements BoardService {
 		}
 	}
 
+	// 첨부파일 내용
+	@Override
+	public FilesVO selectFileContents(int FILE_CODE) {
+		
+		return null;
+	}
+	
+	
 }

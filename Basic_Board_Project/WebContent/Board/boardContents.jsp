@@ -37,6 +37,7 @@
 				<table width="413">
 				<c:set var = "user" value="${userContents}"/>
 				<c:set var = "board" value="${boardContents}"/>
+				<c:set var = "file" value="${fileContents }"/>
 					<tr>
 						<td width="0">&nbsp;</td>
 						<td align="center" width="76">글번호</td>
@@ -92,6 +93,14 @@
 					<tr height="1" bgcolor="#82B5DF">
 						<td colspan="4" width="407"></td>
 					</tr>
+					
+					<tr> <!-- 첨부파일 내용 추가할 부분 -->
+						<td width="0">&nbsp;</td>
+						<td width="399" colspan="2" height="200">
+					</tr>
+					<tr height="1" bgcolor="#dddddd">
+						<td colspan="4" width="407"></td>
+						
 					<tr align="center">
 						<td width="0">&nbsp;</td>
 						<td colspan="2" width="399">

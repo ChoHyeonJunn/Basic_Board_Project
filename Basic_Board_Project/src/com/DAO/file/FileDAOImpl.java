@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 import com.DAO.JDBCTemplate;
 import com.VO.FilesVO;
+import com.VO.UsersVO;
 
 public class FileDAOImpl extends JDBCTemplate implements FileDAO {
 
@@ -63,7 +64,9 @@ public class FileDAOImpl extends JDBCTemplate implements FileDAO {
 		
 		Connection conn = getConnection();
 
-		String sql = " INSERT INTO FILES VALUES (SEQ_FILES_FILE_CODE.NEXTVAL, SEQ_BOARDS_BOARD_CODE.CURRVAL+1, ?, ?, ?, ?, ?, SYSDATE, 'N') ";
+		// BOARD_CODE 넣는 부분 확인해야함*****
+		String sql = " INSERT INTO FILES VALUES (SEQ_FILES_FILE_CODE.NEXTVAL,"
+				+ "(SELECT MAX(BOARD_CODE) FROM BOARDS), ?, ?, ?, ?, ?, SYSDATE, 'N') ";
 		PreparedStatement pstmt = null;
 		int res = 0;
 		
@@ -90,5 +93,45 @@ public class FileDAOImpl extends JDBCTemplate implements FileDAO {
 		}
 		
 		return res;
+	}
+
+	// 어떤 게시글의 첨부파일 가져오기
+	@Override
+	public FilesVO selectFileContent(int FILE_CODE) {
+		
+		Connection conn = getConnection();
+
+		String sql = " SELECT * FROM FILES WHERE FILE_CODE = ? ";
+
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		FilesVO file = null;
+
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, FILE_CODE);
+			rs = pstmt.executeQuery();
+
+			if (rs.next()) {
+				file = new FilesVO();
+
+				file.setBOARD_CODE(rs.getInt("BOARD_CODE"));
+				file.setUSER_CODE(rs.getInt("USER_CODE"));
+				file.setFILE_ORIGINAL_NAME(rs.getString("FILE_ORIGINAL_NAME"));
+				file.setFILE_STORED_NAME(rs.getString("FILE_STORED_NAME"));
+				file.setFILE_PATH(rs.getString("FILE_PATH"));
+				file.setFILE_SIZE(rs.getString("FILE_SIZE"));
+				file.setCREATE_DATE(rs.getDate("CREATE_DATE"));
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(rs);
+			close(pstmt);
+			close(conn);
+		}
+
+		return file;
 	}
 }

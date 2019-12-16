@@ -28,4 +28,6 @@ public interface BoardService {
 	// 첨부파일 업로드
 	public boolean insertFile(FilesVO file);
 
+	// 첨부파일 내용
+	public FilesVO selectFileContents(int FILE_CODE);
 }
