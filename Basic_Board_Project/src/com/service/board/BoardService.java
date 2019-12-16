@@ -5,12 +5,13 @@ import java.util.Map;
 
 import com.VO.BoardListVO;
 import com.VO.BoardsVO;
+import com.VO.FilesVO;
 
 public interface BoardService {
 
 	public ArrayList<BoardListVO> selectBoardsListData(int curPage);
 	// 게시판 글쓰기
-	public int insertBoard(BoardsVO board);
+	public boolean insertBoard(BoardsVO board);
 	
 	// 게시판 내용
 	public Map<String, Object> selectBoardContents(int BOARD_CODE);
@@ -19,8 +20,12 @@ public interface BoardService {
 	public void increaseCountView(int BOARD_CODE);
 	
 	// 게시판 수정
-	public void updateBoard(BoardsVO board);
+	public boolean updateBoard(BoardsVO board);
 	
 	// 게시물 삭제
-	public void deleteBoard(int BOARD_CODE);
+	public boolean deleteBoard(int BOARD_CODE);
+	
+	// 첨부파일 업로드
+	public boolean insertFile(FilesVO file);
+
 }

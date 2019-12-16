@@ -106,4 +106,12 @@ public class FilesVO {
 		DEL_YN = dEL_YN;
 	}
 
+	@Override
+	public String toString() {
+		return "FilesVO [FILE_CODE=" + FILE_CODE + ", BOARD_CODE=" + BOARD_CODE + ", USER_CODE=" + USER_CODE
+				+ ", FILE_ORIGINAL_NAME=" + FILE_ORIGINAL_NAME + ", FILE_STORED_NAME=" + FILE_STORED_NAME
+				+ ", FILE_PATH=" + FILE_PATH + ", FILE_SIZE=" + FILE_SIZE + ", CREATE_DATE=" + CREATE_DATE + ", DEL_YN="
+				+ DEL_YN + "]";
+	}
+
 }

@@ -8,4 +8,5 @@ public interface FileDAO {
 
 	public ArrayList<FilesVO> selectFiles() throws Exception;
 
+	public int insertFile(FilesVO file);
 }

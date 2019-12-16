@@ -6,15 +6,19 @@ import java.util.Map;
 
 import com.DAO.board.BoardDAO;
 import com.DAO.board.BoardDAOImpl;
+import com.DAO.file.FileDAO;
+import com.DAO.file.FileDAOImpl;
 import com.DAO.user.UserDAO;
 import com.DAO.user.UserDAOImpl;
 import com.VO.BoardListVO;
 import com.VO.BoardsVO;
+import com.VO.FilesVO;
 
 public class BoardServiceImpl implements BoardService {
 
 	private BoardDAO boardDAO = new BoardDAOImpl();
 	UserDAO usersDAO = new UserDAOImpl();
+	FileDAO fileDAO = new FileDAOImpl();
 
 	@Override
 	public ArrayList<BoardListVO> selectBoardsListData(int curPage) {
@@ -35,8 +39,13 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
-	public int insertBoard(BoardsVO board) {
-		return boardDAO.insertBoard(board);
+	public boolean insertBoard(BoardsVO board) {
+		
+		if(boardDAO.insertBoard(board) > 0) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	@Override
@@ -55,13 +64,35 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
-	public void updateBoard(BoardsVO board) {
-		boardDAO.updateBoard(board);
+	public boolean updateBoard(BoardsVO board) {
+		
+		if(boardDAO.updateBoard(board) > 0) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	@Override
-	public void deleteBoard(int BOARD_CODE) {
-		boardDAO.deleteBoard(BOARD_CODE);
+	public boolean deleteBoard(int BOARD_CODE) {
+		
+		if(boardDAO.deleteBoard(BOARD_CODE) > 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+
+	// 첨부파일 업로드
+	@Override
+	public boolean insertFile(FilesVO file) {
+		
+		if(fileDAO.insertFile(file) > 0) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 }

@@ -147,6 +147,7 @@ public class BoardDAOImpl extends JDBCTemplate implements BoardDAO {
 			res = pstmt.executeUpdate();
 			if (res > 0)
 				commit(con);
+			
 		} catch (SQLException e) {
 			System.out.println("[ ERROR ] : BoardDAOImpl - insertBoard() SQL 확인하세요.");
 			e.printStackTrace();

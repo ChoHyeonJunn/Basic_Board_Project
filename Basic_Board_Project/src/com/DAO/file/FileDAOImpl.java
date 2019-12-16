@@ -57,4 +57,38 @@ public class FileDAOImpl extends JDBCTemplate implements FileDAO {
 
 		return filesList;
 	}
+
+	@Override
+	public int insertFile(FilesVO file) {
+		
+		Connection conn = getConnection();
+
+		String sql = " INSERT INTO FILES VALUES (SEQ_FILES_FILE_CODE.NEXTVAL, SEQ_BOARDS_BOARD_CODE.CURRVAL+1, ?, ?, ?, ?, ?, SYSDATE, 'N') ";
+		PreparedStatement pstmt = null;
+		int res = 0;
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+
+			pstmt.setInt(1, file.getUSER_CODE());
+			pstmt.setString(2, file.getFILE_ORIGINAL_NAME());
+			pstmt.setString(3, file.getFILE_STORED_NAME());
+			pstmt.setString(4, file.getFILE_PATH());
+			pstmt.setString(5, file.getFILE_SIZE());
+
+			res = pstmt.executeUpdate();
+			
+			if (res > 0)
+				commit(conn);
+			
+		} catch (SQLException e) {
+			System.out.println("[ ERROR ] : FileDAOImpl - insertFile() SQL 확인하세요.");
+			e.printStackTrace();
+		} finally {
+			close(pstmt);
+			close(conn);
+		}
+		
+		return res;
+	}
 }
