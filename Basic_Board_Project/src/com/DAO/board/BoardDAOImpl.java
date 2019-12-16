@@ -56,22 +56,83 @@ public class BoardDAOImpl extends JDBCTemplate implements BoardDAO {
 	}
 
 	@Override
-	public ArrayList<BoardListVO> selectBoardList() throws Exception {
+	public ArrayList<BoardListVO> selectBoardList() {
+		ArrayList<BoardListVO> boardList = new ArrayList<BoardListVO>();
 
 		Connection conn = getConnection();
-
-		ArrayList<BoardListVO> boardList = new ArrayList<BoardListVO>();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 
 		String sql = " SELECT U.USER_CODE, U.USERID, U.PASSWORD, U.NAME, U.CREATE_DATE, "
 				+ "        B.BOARD_CODE, B.USER_CODE, B.TITLE, B.CONTEXT, B.COUNT_VIEW, B.COUNT_COMMENT, B.CREATE_DATE, B.UPDATE_DATE, B.DEL_YN "
 				+ " FROM USERS U, BOARDS B " + " WHERE U.USER_CODE = B.USER_CODE "
 						+ " ORDER BY B.CREATE_DATE DESC";
 
+		try {
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				BoardListVO board = new BoardListVO();
+
+				board.setBOARD_CODE(rs.getInt("BOARD_CODE"));
+				board.setTITLE(rs.getString("TITLE"));
+				board.setCOUNT_COMMENT(rs.getInt("COUNT_COMMENT"));
+				board.setNAME(rs.getString("NAME"));
+				board.setCREATE_DATE(rs.getDate("CREATE_DATE"));
+				board.setCOUNT_VIEW(rs.getInt("COUNT_VIEW"));
+
+				boardList.add(board);
+			}
+
+		} catch (SQLException e) {
+			System.out.println("[ ERROR ] : BoardDAOImpl - selectBoards() SQL 확인하세요.");
+			e.printStackTrace();
+		} finally {
+			close(rs);
+			close(pstmt);
+			close(conn);
+		}
+
+		return boardList;
+	}
+
+	@Override
+	public ArrayList<BoardListVO> selectSearchList(int how, String kwd) {
+		ArrayList<BoardListVO> boardList = new ArrayList<BoardListVO>();
+
+		Connection conn = getConnection();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 
+		String sql = null;
+
+		if (how == 0)
+			sql = " SELECT * " + " FROM BOARDS JOIN USERS USING(USER_CODE) "
+					+ " WHERE TITLE LIKE ? ORDER BY BOARDS.CREATE_DATE DESC";
+		if (how == 1)
+			sql = " SELECT * " + " FROM BOARDS JOIN USERS USING(USER_CODE) "
+					+ " WHERE CONTEXT LIKE ? ORDER BY BOARDS.CREATE_DATE DESC";
+		if (how == 2)
+			sql = " SELECT * " + " FROM BOARDS JOIN USERS USING(USER_CODE) "
+					+ " WHERE TITLE LIKE ? OR CONTEXT LIKE ? ORDER BY BOARDS.CREATE_DATE DESC";
+		if (how == 3)
+			sql = " SELECT * " + " FROM BOARDS JOIN USERS USING(USER_CODE) "
+					+ " WHERE NAME LIKE ? ORDER BY BOARDS.CREATE_DATE DESC";
 		try {
 			pstmt = conn.prepareStatement(sql);
+
+			if (how == 0)
+				pstmt.setString(1, "%" + kwd + "%");
+			if (how == 1)
+				pstmt.setString(1, "%" + kwd + "%");
+			if (how == 2) {
+				pstmt.setString(1, "%" + kwd + "%");
+				pstmt.setString(1, "%" + kwd + "%");
+			}
+			if (how == 3)
+				pstmt.setString(1, "%" + kwd + "%");
+
 			rs = pstmt.executeQuery();
 
 			while (rs.next()) {
@@ -293,10 +354,35 @@ public class BoardDAOImpl extends JDBCTemplate implements BoardDAO {
 		ResultSet rs = null;
 		
 		int res = 0;
+<<<<<<< HEAD
 
 		String sql = "SELECT COUNT(*) CNT FROM BOARDS";
 		try {
 			pstmt = conn.prepareStatement(sql);
+=======
+		String sql = null;
+		if (how == 0)
+			sql = " SELECT COUNT(*) CNT FROM BOARDS WHERE TITLE LIKE ? ";
+		if (how == 1)
+			sql = " SELECT COUNT(*) CNT FROM BOARDS WHERE CONTEXT LIKE ? ";
+		if (how == 2)
+			sql = " SELECT COUNT(*) CNT FROM BOARDS WHERE TITLE LIKE ? OR CONTEXT LIKE ? ";
+		if (how == 3)
+			sql = " SELECT COUNT(*) CNT FROM BOARDS JOIN USERS USING(USER_CODE) WHERE NAME LIKE ? ";
+		try {
+			pstmt = conn.prepareStatement(sql);
+			if (how == 0)
+				pstmt.setString(1, "%" + kwd + "%");
+			if (how == 1)
+				pstmt.setString(1, "%" + kwd + "%");
+			if (how == 2) {
+				pstmt.setString(1, "%" + kwd + "%");
+				pstmt.setString(1, "%" + kwd + "%");
+			}
+			if (how == 3)
+				pstmt.setString(1, "%" + kwd + "%");
+
+>>>>>>> b
 			rs = pstmt.executeQuery();
 
 			while (rs.next()) {
@@ -315,5 +401,64 @@ public class BoardDAOImpl extends JDBCTemplate implements BoardDAO {
 		return res;
 	}
 
+<<<<<<< HEAD
+=======
+	@Override
+	public int increaseCountComment(int BOARD_CODE) {
+		for (int i = 0; i < 30; i++)
+			System.out.println("상승!!!!");
+		Connection con = getConnection();
+		PreparedStatement pstmt = null;
+		int res = 0;
+
+		String sql = " UPDATE BOARDS SET COUNT_COMMENT = COUNT_COMMENT + 1 WHERE BOARD_CODE = ? ";
+
+		try {
+			pstmt = con.prepareStatement(sql);
+
+			pstmt.setInt(1, BOARD_CODE);
+
+			res = pstmt.executeUpdate();
+			if (res > 0)
+				commit(con);
+		} catch (SQLException e) {
+			System.out.println("[ ERROR ] : BoardDAOImpl - increaseCountComment() SQL 확인하세요.");
+			e.printStackTrace();
+		} finally {
+			close(pstmt);
+			close(con);
+		}
+
+		return res;
+	}
+
+	@Override
+	public int decreaseCountComment(int BOARD_CODE) {
+
+		Connection con = getConnection();
+		PreparedStatement pstmt = null;
+		int res = 0;
+
+		String sql = " UPDATE BOARDS SET COUNT_COMMENT = COUNT_COMMENT - 1 WHERE BOARD_CODE = ? ";
+
+		try {
+			pstmt = con.prepareStatement(sql);
+
+			pstmt.setInt(1, BOARD_CODE);
+
+			res = pstmt.executeUpdate();
+			if (res > 0)
+				commit(con);
+		} catch (SQLException e) {
+			System.out.println("[ ERROR ] : BoardDAOImpl - decreaseCountComment() SQL 확인하세요.");
+			e.printStackTrace();
+		} finally {
+			close(pstmt);
+			close(con);
+		}
+
+		return res;
+	}
+>>>>>>> b
 
 }

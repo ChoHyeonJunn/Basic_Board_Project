@@ -24,11 +24,25 @@ public class BoardServiceImpl implements BoardService {
 	public ArrayList<BoardListVO> selectBoardsListData(int curPage) {
 		ArrayList<BoardListVO> res = new ArrayList<BoardListVO>();
 		ArrayList<BoardListVO> boardsList = null;
-		try {
-			boardsList = boardDAO.selectBoardList();
-		} catch (Exception e) {
-			e.printStackTrace();
+
+		boardsList = boardDAO.selectBoardList();
+
+		for (int i = ((curPage * 10) - 10); i < (curPage * 10); i++) {
+			if (boardsList.size() <= i)
+				break;
+			res.add(boardsList.get(i));
 		}
+
+		return res;
+	}
+
+	@Override
+	public ArrayList<BoardListVO> selectSearchListData(int curPage, int how, String kwd) {
+		ArrayList<BoardListVO> res = new ArrayList<BoardListVO>();
+		ArrayList<BoardListVO> boardsList = null;
+
+		boardsList = boardDAO.selectSearchList(how, kwd);
+
 		for (int i = ((curPage * 10) - 10); i < (curPage * 10); i++) {
 			if (boardsList.size() <= i)
 				break;
@@ -51,10 +65,10 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	public Map<String, Object> selectBoardContents(int BOARD_CODE) {
 		Map<String, Object> contentsMap = new HashMap<String, Object>();
-		
+
 		contentsMap.put("boardsVO", boardDAO.selectBoardContents(BOARD_CODE));
 		contentsMap.put("usersVO", usersDAO.selectOneUser(boardDAO.selectBoardContents(BOARD_CODE).getUSER_CODE()));
-		
+
 		return contentsMap;
 	}
 
@@ -93,6 +107,16 @@ public class BoardServiceImpl implements BoardService {
 		} else {
 			return false;
 		}
+	}
+
+	@Override
+	public void increaseCountComment(int BOARD_CODE) {
+		boardDAO.increaseCountComment(BOARD_CODE);
+	}
+
+	@Override
+	public void decreaseCountComment(int BOARD_CODE) {
+		boardDAO.decreaseCountComment(BOARD_CODE);
 	}
 
 }

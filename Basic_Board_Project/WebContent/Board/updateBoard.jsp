@@ -31,24 +31,24 @@
 			}
 		%>
 	<c:set var="board" value="${boardContents}"/>
+	
+	
+	<div class="container mx-auto m-5 p-5 bg-ligth shadow">	
+	
 	<form action="/Basic_Board_Project/BoardController?action=update&BOARD_CODE=${board.BOARD_CODE}"	method="post">
 
-		<table>
+		<table style="width: 100%; cellpadding: 0; cellspacing: 0; border: 0;">
 			<tr>
-				<td>&nbsp;</td>
 				<td align="center">제목</td>
-				<td><input name="TITLE" size="50" maxlength="100" value="${board.TITLE}"></td>
-				<td>&nbsp;</td>
+				<td><input name="TITLE" size="120" maxlength="100" value="${board.TITLE}"></td>
 			</tr>
 			<tr height="1" bgcolor="#dddddd">
 				<td colspan="4"></td>
 			</tr>
 
 			<tr>
-				<td>&nbsp;</td>
 				<td align="center">내용</td>
-				<td><textarea name="CONTEXT" cols="50" rows="13">${board.CONTEXT}</textarea></td>
-				<td>&nbsp;</td>
+				<td><textarea name="CONTEXT" cols="120" rows="13">${board.CONTEXT}</textarea></td>
 			</tr>
 			<tr height="1" bgcolor="#dddddd">
 				<td colspan="4"></td>
@@ -57,13 +57,13 @@
 				<td colspan="4"></td>
 			</tr>
 			<tr align="center">
-				<td>&nbsp;</td>
 				<td colspan="2"><input type="submit" value="등록"
 					class="btn btn-info"> <a href="javascript:history.go(-1)"
 					class="btn btn-info">돌아가기</a>
-				<td>&nbsp;</td>
 			</tr>
 		</table>
 	</form>
+	
+	</div>
 </body>
 </html>

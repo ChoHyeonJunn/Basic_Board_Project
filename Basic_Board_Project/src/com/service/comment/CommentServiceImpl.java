@@ -20,4 +20,35 @@ public class CommentServiceImpl implements CommentService {
 		return commentsList;
 	}
 
+	@Override
+	public ArrayList<CommentsVO> selectComments(int BOARD_CODE) {
+		
+		return commentDAO.selectComments(BOARD_CODE);
+	}
+
+	@Override
+	public int insertComment(CommentsVO comment) {
+		return commentDAO.insertComment(comment);
+	}
+
+	@Override
+	public int updateComment(CommentsVO comment) {
+		return commentDAO.updateComment(comment);
+	}
+
+	@Override
+	public int deleteComment(int COMMENT_CODE) {
+		return commentDAO.deleteComment(COMMENT_CODE);
+	}
+
+	@Override
+	public int goodComment(int COMMENT_CODE) {
+		return commentDAO.goodComment(COMMENT_CODE);
+	}
+
+	@Override
+	public int badComment(int COMMENT_CODE) {
+		return commentDAO.badComment(COMMENT_CODE);
+	}
+
 }

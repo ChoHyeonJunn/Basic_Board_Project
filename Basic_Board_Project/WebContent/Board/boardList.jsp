@@ -31,25 +31,27 @@
 </head>
 <body>
 
-	<%
-		if (NAME != null) {
-	%>
-	<div id="userInfo"
-		style="height: 10%; with: 100%; padding: 20px; text_align: center;">
 
-		<button id="logout" class="btn btn-info">로그아웃</button>
-		<a href="/Basic_Board_Project/User/userContents.jsp" class="btn btn-info">회원정보</a> 
-		<a href="/Basic_Board_Project/Board/userBoardList.jsp" class="btn btn-info">내가쓴글</a>
-		<br> 
-		<label><%=NAME%>님 환영합니다.</label> 
-		<br> <br>
+	<div class="container mx-auto m-5 p-5 bg-ligth shadow">
+	
+		<h1>BOARD :: 목록</h1>
+		<%
+			if (NAME != null) {
+		%>
+		<div id="userInfo"
+			style="height: 10%; with: 100%; padding: 20px; text_align: center;">
 
-	</div>
-	<%
+			<button id="logout" class="btn btn-info">로그아웃</button>
+			<a href="/Basic_Board_Project/User/userContents.jsp"
+				class="btn btn-info">회원정보</a> <a
+				href="/Basic_Board_Project/BoardController?action=search&opt=3&condition=<%=NAME%>"
+				class="btn btn-info">내가쓴글</a> <br> <label><%=NAME%>님
+				환영합니다.</label> <br> <br>
+
+		</div>
+		<%
 		}
-	%>
-
-	<div style="height: 80%; with: 100%; padding: 20px">
+		%>
 		<%
 			if (NAME == null) {
 		%>
@@ -74,7 +76,7 @@
 				</form>
 			</div>
 
-			<h1>BOARD :: 목록</h1>
+
 
 			<table>
 				<thead>
@@ -104,31 +106,30 @@
 		<div class="container-fluid w-50 mx-auto">
 			<ul class="pagination">
 				<c:if test="${ curPageNum > 5 }">
-					<a href="/Basic_Board_Project/BoardController?curPage=${ blockStartNum - 1 }">◀</a>
+					<a href="/Basic_Board_Project/BoardController?curPage=${ blockStartNum - 1 }">&nbsp;◀</a>
 				</c:if>
 
 				<c:forEach var="i" begin="${ blockStartNum }" end="${ blockLastNum }">
 					<c:choose>
 
 						<c:when test="${ i > lastPageNum }">
-							<li class="page-item disabled">${  i  }</li>
+							<li class="page-item disabled">&nbsp;${i}</li>
 						</c:when>
 
 						<c:when test="${ i == curPageNum }">
-							<li class="page-item disabled">${  i  }</li>
+							<li class="page-item disabled">&nbsp;${i}</li>
 						</c:when>
 
 						<c:otherwise>
 							<li class="page-item disabled"><a
-								href="/Basic_Board_Project/BoardController?curPage=${ i }">${  i  }</a></li>
+								href="/Basic_Board_Project/BoardController?curPage=${ i }">&nbsp;${i}</a></li>
 						</c:otherwise>
 
 					</c:choose>
 				</c:forEach>
 
 				<c:if test="${ lastPageNum > blockLastNum }">
-					<a
-						href="/Basic_Board_Project/BoardController?curPage=${ blockLastNum + 1 }">▶</a>
+					<a href="/Basic_Board_Project/BoardController?curPage=${ blockLastNum + 1 }">&nbsp;▶</a>
 				</c:if>
 			</ul>
 		</div>

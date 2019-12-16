@@ -15,9 +15,13 @@ import com.VO.BoardsVO;
 import com.VO.FilesVO;
 import com.oreilly.servlet.MultipartRequest;
 import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
+
+import com.VO.CommentsVO;
 import com.service.board.BoardService;
 import com.service.board.BoardServiceImpl;
 import com.service.board.Paging;
+import com.service.comment.CommentService;
+import com.service.comment.CommentServiceImpl;
 
 @WebServlet("/BoardController")
 public class BoardController extends HttpServlet {
@@ -29,6 +33,7 @@ public class BoardController extends HttpServlet {
 	private PrintWriter out;
 
 	private BoardService boardService = new BoardServiceImpl();
+	private CommentService commentService = new CommentServiceImpl();
 
 	public BoardController() {
 		super();
@@ -72,9 +77,26 @@ public class BoardController extends HttpServlet {
 			selectList();
 			break;
 		case "search":
-			search();
-			selectList();
+			if (!searchList()) {
+				selectList();
+			}
 			break;
+		case "insertComment":
+			insertComment();
+			boardContents();
+			break;
+		case "updateComment":
+			updateComment();
+			boardContents();
+			break;
+		case "deleteComment":
+			deleteComment();
+			boardContents();
+			break;
+		case "statusComment":
+			statusComment();
+			boardContents();
+
 		}
 
 		RequestDispatcher dispatcher = request.getRequestDispatcher(view);
@@ -82,27 +104,62 @@ public class BoardController extends HttpServlet {
 		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
+	private void statusComment() {
+		String status = request.getParameter("status");
 
-	private void search() {
-		//request.setAttribute("boardList", boardService.selectBoardsListData());
-		System.out.println(request.getAttribute("opt"));
-		//view = "/Board/boardList.jsp";		
+		if (status.equals("good"))
+			commentService.goodComment(Integer.parseInt(request.getParameter("COMMENT_CODE")));
+		if (status.equals("bad"))
+			commentService.badComment(Integer.parseInt(request.getParameter("COMMENT_CODE")));
+
+	}
+
+	private void deleteComment() {
+		commentService.deleteComment(Integer.parseInt(request.getParameter("COMMENT_CODE")));
+		boardService.decreaseCountComment(Integer.parseInt(request.getParameter("BOARD_CODE")));
+	}
+
+	private void updateComment() {
+		if (request.getParameter("CONTEXT") == "")
+			return;
+		CommentsVO comment = new CommentsVO();
+
+		comment.setBOARD_CODE(Integer.parseInt(request.getParameter("BOARD_CODE")));
+		comment.setCOMMENT_CODE(Integer.parseInt(request.getParameter("COMMENT_CODE")));
+		comment.setCONTEXT(request.getParameter("CONTEXT"));
+
+		commentService.updateComment(comment);
+	}
+
+	private void insertComment() {
+		if (request.getParameter("CONTEXT") == "")
+			return;
+		CommentsVO comment = new CommentsVO();
+
+		comment.setBOARD_CODE(Integer.parseInt(request.getParameter("BOARD_CODE")));
+		comment.setUSER_CODE(Integer.parseInt(request.getParameter("USER_CODE")));
+		comment.setCONTEXT(request.getParameter("CONTEXT"));
+
+		commentService.insertComment(comment);
+		boardService.increaseCountComment(Integer.parseInt(request.getParameter("BOARD_CODE")));
+
 	}
 
 	// 게시글 리스트
 	private void selectList() throws IOException {
 		Paging paging = new Paging();
-
-		int curPage = 1;
-
 		paging.makeLastPageNum();
-		paging.makeBlock(curPage);
 
+		int curPage = 1; // 현재 페이지
 		if (request.getParameter("curPage") != null) {
 			curPage = Integer.parseInt(request.getParameter("curPage"));
 			paging.makeBlock(curPage);
 			request.setAttribute("curPageNum", curPage);
+		} else {
+			paging.makeBlock(curPage);
+			request.setAttribute("curPageNum", curPage);
 		}
+
 		Integer blockStartNum = paging.getBlockStartNum();
 		Integer blockLastNum = paging.getBlockLastNum();
 		Integer lastPageNum = paging.getLastPageNum();
@@ -116,7 +173,46 @@ public class BoardController extends HttpServlet {
 		view = "/Board/boardList.jsp";
 	}
 
-	// 게시글 등록 & 파일 첨부
+	private boolean searchList() {
+		if (request.getParameter("condition") == "") {
+			System.out.println("키워드가 없습니다!");
+			return false;
+		} else {
+			int option = Integer.parseInt(request.getParameter("opt"));
+			String condition = request.getParameter("condition");
+
+			Paging paging = new Paging();
+			paging.makeLastPageNum(option, condition);
+
+			int curPage = 1; // 현재 페이지
+			if (request.getParameter("curPage") != null) {
+				curPage = Integer.parseInt(request.getParameter("curPage"));
+				paging.makeBlock(curPage);
+				request.setAttribute("curPageNum", curPage);
+			} else {
+				paging.makeBlock(curPage);
+				request.setAttribute("curPageNum", curPage);
+			}
+
+			Integer blockStartNum = paging.getBlockStartNum();
+			Integer blockLastNum = paging.getBlockLastNum();
+			Integer lastPageNum = paging.getLastPageNum();
+
+			request.setAttribute("blockStartNum", blockStartNum);
+			request.setAttribute("blockLastNum", blockLastNum);
+			request.setAttribute("lastPageNum", lastPageNum);
+
+			request.setAttribute("boardList", boardService.selectSearchListData(curPage, option, condition));
+
+			view = "/Board/boardList.jsp";
+
+			System.out.println("search 성공!!");
+			return true;
+		}
+	}
+
+	// 게시글 등록
+
 	private void insertBoard() {
 		System.out.println("user_code : "+Integer.parseInt(request.getParameter("USER_CODE")));
 		System.out.println("title : "+request.getParameter("TITLE"));
@@ -227,6 +323,8 @@ public class BoardController extends HttpServlet {
 
 		request.setAttribute("boardContents", boardService.selectBoardContents(BOARD_CODE).get("boardsVO"));
 		request.setAttribute("userContents", boardService.selectBoardContents(BOARD_CODE).get("usersVO"));
+		request.setAttribute("commentsList", commentService.selectComments(BOARD_CODE));
+
 		view = "/Board/boardContents.jsp";
 
 	}
