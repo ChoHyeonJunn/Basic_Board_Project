@@ -64,7 +64,8 @@ public class BoardDAOImpl extends JDBCTemplate implements BoardDAO {
 
 		String sql = " SELECT U.USER_CODE, U.USERID, U.PASSWORD, U.NAME, U.CREATE_DATE, "
 				+ "        B.BOARD_CODE, B.USER_CODE, B.TITLE, B.CONTEXT, B.COUNT_VIEW, B.COUNT_COMMENT, B.CREATE_DATE, B.UPDATE_DATE, B.DEL_YN "
-				+ " FROM USERS U, BOARDS B " + " WHERE U.USER_CODE = B.USER_CODE " + " ORDER BY B.CREATE_DATE DESC";
+				+ " FROM USERS U, BOARDS B " + " WHERE U.USER_CODE = B.USER_CODE "
+						+ " ORDER BY B.CREATE_DATE DESC";
 
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -98,12 +99,13 @@ public class BoardDAOImpl extends JDBCTemplate implements BoardDAO {
 		return boardList;
 	}
 
+
 	@Override
 	public int getCount() {
 		Connection conn = getConnection();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-
+		
 		int res = 0;
 
 		String sql = "SELECT COUNT(*) CNT FROM BOARDS";
@@ -126,7 +128,7 @@ public class BoardDAOImpl extends JDBCTemplate implements BoardDAO {
 
 		return res;
 	}
-
+	
 	@Override
 	public int insertBoard(BoardsVO board) {
 
@@ -204,12 +206,14 @@ public class BoardDAOImpl extends JDBCTemplate implements BoardDAO {
 		PreparedStatement pstmt = null;
 		int res = 0;
 
-		String sql = " UPDATE BOARDS " + " SET COUNT_VIEW = COUNT_VIEW + 1 " + " WHERE BOARD_CODE = ? ";
+		String sql = " UPDATE BOARDS "
+				+ " SET COUNT_VIEW = COUNT_VIEW + 1 "
+				+ " WHERE BOARD_CODE = ? ";
 		try {
 			pstmt = con.prepareStatement(sql);
 
 			pstmt.setInt(1, BOARD_CODE);
-
+			
 			res = pstmt.executeUpdate();
 
 			if (res > 0)
@@ -222,7 +226,7 @@ public class BoardDAOImpl extends JDBCTemplate implements BoardDAO {
 			close(pstmt);
 			close(con);
 		}
-
+		
 	}
 
 	@Override
@@ -287,30 +291,12 @@ public class BoardDAOImpl extends JDBCTemplate implements BoardDAO {
 		Connection conn = getConnection();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-
+		
 		int res = 0;
-		String sql = null;
-		if (how == 0)
-			sql = "SELECT COUNT(*) CNT FROM BOARDS WHERE TITLE LIKE '%?%'";
-		if (how == 1)
-			sql = "SELECT COUNT(*) CNT FROM BOARDS WHERE CONTEXT LIKE '%?%'";
-		if (how == 2)
-			sql = "SELECT COUNT(*) CNT FROM BOARDS WHERE TITLE LIKE '%?%' OR CONTEXT LIKE '%?%'";
-		if (how == 3)
-			sql = "SELECT * FROM BOARDS JOIN USERS USING(USER_CODE) " + " WHERE NAME LIKE '%?%' ";
+
+		String sql = "SELECT COUNT(*) CNT FROM BOARDS";
 		try {
 			pstmt = conn.prepareStatement(sql);
-			if (how == 0)
-				pstmt.setString(1, kwd);
-			if (how == 1)
-				pstmt.setString(1, kwd);
-			if (how == 2) {
-				pstmt.setString(1, kwd);
-				pstmt.setString(1, kwd);
-			}
-			if (how == 3)
-				pstmt.setString(1, kwd);
-
 			rs = pstmt.executeQuery();
 
 			while (rs.next()) {
@@ -328,5 +314,6 @@ public class BoardDAOImpl extends JDBCTemplate implements BoardDAO {
 
 		return res;
 	}
+
 
 }

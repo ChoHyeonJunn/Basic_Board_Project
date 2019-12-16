@@ -39,8 +39,8 @@ public class BoardController extends HttpServlet {
 		this.request = request;
 		this.response = response;
 
-		this.request.setCharacterEncoding("utf-8");
-		this.response.setContentType("text/html;charset=utf-8");
+		request.setCharacterEncoding("utf-8");
+		response.setContentType("text/html;charset=utf-8");
 
 		out = response.getWriter();
 		String action = request.getParameter("action");
@@ -85,11 +85,7 @@ public class BoardController extends HttpServlet {
 
 	private void search() {
 		//request.setAttribute("boardList", boardService.selectBoardsListData());
-		System.out.println("option : " + request.getParameter("opt"));
-		System.out.println("condition : " + request.getParameter("condition"));
-		if(request.getParameter("condition")==""){
-			return;
-		}
+		System.out.println(request.getAttribute("opt"));
 		//view = "/Board/boardList.jsp";		
 	}
 
