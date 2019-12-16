@@ -4,7 +4,8 @@ import com.DAO.board.BoardDAO;
 import com.DAO.board.BoardDAOImpl;
 
 public class Paging {
-	private final static int pageCount = 5;
+	private final static int pageCount = 10;
+	private final static int blockCount = 5;
 	private int blockStartNum = 0;
 	private int blockLastNum = 0;
 	private int lastPageNum = 0;
@@ -38,9 +39,11 @@ public class Paging {
 	public void makeBlock(int curPage) {
 		int blockNum = 0;
 
-		blockNum = (int) Math.floor((curPage - 1) / pageCount);
-		blockStartNum = (pageCount * blockNum) + 1;
-		blockLastNum = blockStartNum + (pageCount - 1);
+		blockNum = (int) Math.floor((curPage - 1) / blockCount);
+		blockStartNum = (blockCount * blockNum) + 1;
+		blockLastNum = blockStartNum + (blockCount - 1);
+		if(blockLastNum > lastPageNum)
+			blockLastNum = lastPageNum;
 	}
 
 	// 총 페이지의 마지막 번호
@@ -48,19 +51,19 @@ public class Paging {
 		BoardDAO dao = new BoardDAOImpl();
 		int total = dao.getCount();
 		System.out.println("total : " + total);
-
 		if (total % pageCount == 0) {
 			lastPageNum = (int) Math.floor(total / pageCount);
 		} else {
 			lastPageNum = (int) Math.floor(total / pageCount) + 1;
 		}
+		System.out.println("lastPageNum : " + lastPageNum);
 	}
 
 	// 검색을 했을 때 총 페이지의 마지막 번호
 	public void makeLastPageNum(int how, String kwd) {
 		BoardDAO dao = new BoardDAOImpl();
 		int total = dao.getCount(how, kwd);
-
+		System.out.println("search total : " + total);
 		if (total % pageCount == 0) {
 			lastPageNum = (int) Math.floor(total / pageCount);
 		} else {

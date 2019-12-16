@@ -15,6 +15,14 @@ public class CommentsVO {
 	private Date UPDATE_DATE;
 
 	private boolean DEL_YN;
+	private String NAME;
+
+	@Override
+	public String toString() {
+		return "CommentsVO [COMMENT_CODE=" + COMMENT_CODE + ", BOARD_CODE=" + BOARD_CODE + ", USER_CODE=" + USER_CODE
+				+ ", CONTEXT=" + CONTEXT + ", COUNT_GOOD=" + COUNT_GOOD + ", COUNT_BAD=" + COUNT_BAD + ", CREATE_DATE="
+				+ CREATE_DATE + ", UPDATE_DATE=" + UPDATE_DATE + ", DEL_YN=" + DEL_YN + ", NAME=" + NAME + "]";
+	}
 
 	public CommentsVO() {
 		super();
@@ -104,6 +112,14 @@ public class CommentsVO {
 
 	public void setDEL_YN(boolean dEL_YN) {
 		DEL_YN = dEL_YN;
+	}
+
+	public String getNAME() {
+		return NAME;
+	}
+
+	public void setNAME(String nAME) {
+		NAME = nAME;
 	}
 
 }
