@@ -34,7 +34,7 @@
 			<tr>
 				<td>&nbsp;</td>
 				<td align="center">제목</td>
-				<td><input type=text name="TITLE" size="50" maxlength="100"></td>
+				<td><input type="text" name="TITLE" size="50" maxlength="100"></td>
 				<td>&nbsp;</td>
 			</tr>
 			<tr height="1" bgcolor="#dddddd">
@@ -57,7 +57,7 @@
 			<tr>
 				<td>&nbsp;</td>
 				<td align="center">첨부 파일</td>
-				<td><input type="file" name="upload"></td>
+				<td><input type="file" name="FILE"></td>
 				<td>&nbsp;</td>
 			</tr>
 			<tr height="1" bgcolor="#dddddd">

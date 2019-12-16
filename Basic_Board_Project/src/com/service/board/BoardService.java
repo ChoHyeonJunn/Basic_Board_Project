@@ -37,4 +37,6 @@ public interface BoardService {
 	public void decreaseCountComment(int BOARD_CODE);
 
 
+	// 첨부파일 내용
+	public FilesVO selectFileContents(int FILE_CODE);
 }

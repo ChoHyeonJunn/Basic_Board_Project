@@ -119,4 +119,11 @@ public class BoardServiceImpl implements BoardService {
 		boardDAO.decreaseCountComment(BOARD_CODE);
 	}
 
+	// 첨부파일 내용
+	@Override
+	public FilesVO selectFileContents(int FILE_CODE) {
+		
+		return null;
+	}
+	
 }
