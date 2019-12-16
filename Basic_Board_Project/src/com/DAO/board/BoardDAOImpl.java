@@ -354,12 +354,7 @@ public class BoardDAOImpl extends JDBCTemplate implements BoardDAO {
 		ResultSet rs = null;
 		
 		int res = 0;
-<<<<<<< HEAD
-
-		String sql = "SELECT COUNT(*) CNT FROM BOARDS";
-		try {
-			pstmt = conn.prepareStatement(sql);
-=======
+		
 		String sql = null;
 		if (how == 0)
 			sql = " SELECT COUNT(*) CNT FROM BOARDS WHERE TITLE LIKE ? ";
@@ -382,7 +377,6 @@ public class BoardDAOImpl extends JDBCTemplate implements BoardDAO {
 			if (how == 3)
 				pstmt.setString(1, "%" + kwd + "%");
 
->>>>>>> b
 			rs = pstmt.executeQuery();
 
 			while (rs.next()) {
@@ -401,8 +395,7 @@ public class BoardDAOImpl extends JDBCTemplate implements BoardDAO {
 		return res;
 	}
 
-<<<<<<< HEAD
-=======
+	
 	@Override
 	public int increaseCountComment(int BOARD_CODE) {
 		for (int i = 0; i < 30; i++)
@@ -459,6 +452,5 @@ public class BoardDAOImpl extends JDBCTemplate implements BoardDAO {
 
 		return res;
 	}
->>>>>>> b
 
 }
