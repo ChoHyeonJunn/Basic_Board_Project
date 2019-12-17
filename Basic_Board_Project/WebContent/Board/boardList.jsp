@@ -42,11 +42,11 @@
 			style="height: 10%; with: 100%; padding: 20px; text_align: center;">
 
 			<button id="logout" class="btn btn-info">로그아웃</button>
-			<a href="/Basic_Board_Project/User/userContents.jsp"
-				class="btn btn-info">회원정보</a> <a
-				href="/Basic_Board_Project/BoardController?action=search&opt=3&condition=<%=NAME%>"
-				class="btn btn-info">내가쓴글</a> <br> <label><%=NAME%>님
-				환영합니다.</label> <br> <br>
+			<a href="/Basic_Board_Project/User/userContents.jsp" class="btn btn-info">회원정보</a> 
+			<a href="/Basic_Board_Project/BoardController?action=search&opt=3&condition=<%=NAME%>" class="btn btn-info">내가쓴글</a> 
+			<br> 
+			<label><%=NAME%>님 환영합니다.</label> 
+			<br> <br>
 
 		</div>
 		<%
@@ -63,7 +63,7 @@
 		%>
 		<div class="container mx-auto m-5 p-5 bg-ligth shadow">
 			<div id="searchForm">
-				<form>
+				<form action="/Basic_Board_Project/BoardController?action=search" method="post">
 					<select name="opt">
 						<option value="0">제목</option>
 						<option value="1">내용</option>

@@ -18,8 +18,8 @@
 			<input type=hidden name="action" value="insert">
 
 			<div class="form-group">
-				<label for="USERID">ID </label>
-					<input type="text" class="form-control" id="USERID" name="USERID">
+				<label for="USERID">ID : </label>
+					<input type="text" class="form-control" id="USERID" name="USERID" maxlength="10">
 			<div class="check_font" id="id_check"></div>	<!-- 경고문이 들어갈 공간 -->
 			</div>
 
