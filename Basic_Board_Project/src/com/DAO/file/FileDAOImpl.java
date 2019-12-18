@@ -97,7 +97,49 @@ public class FileDAOImpl extends JDBCTemplate implements FileDAO {
 
 	// 어떤 게시글의 첨부파일 가져오기
 	@Override
-	public FilesVO selectFileContent(int FILE_CODE) {
+	public FilesVO selectFileContents(int BOARD_CODE) {
+		
+		Connection conn = getConnection();
+
+		String sql = " SELECT * "
+				+ " FROM FILES JOIN BOARDS USING (BOARD_CODE) "
+				+ " WHERE BOARD_CODE = ? ";
+
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		FilesVO file = null;
+
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, BOARD_CODE);
+			rs = pstmt.executeQuery();
+
+			if (rs.next()) {
+				file = new FilesVO();
+
+				file.setFILE_CODE(rs.getInt("FILE_CODE"));
+				file.setUSER_CODE(rs.getInt("USER_CODE"));
+				file.setFILE_ORIGINAL_NAME(rs.getString("FILE_ORIGINAL_NAME"));
+				file.setFILE_STORED_NAME(rs.getString("FILE_STORED_NAME"));
+				file.setFILE_PATH(rs.getString("FILE_PATH"));
+				file.setFILE_SIZE(rs.getString("FILE_SIZE"));
+				file.setCREATE_DATE(rs.getDate("CREATE_DATE"));
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(rs);
+			close(pstmt);
+			close(conn);
+		}
+
+		return file;
+	}
+
+	// FILE_CODE로 첨부파일 내용 가져오기
+	@Override
+	public FilesVO selectOneFile(int FILE_CODE) {
 		
 		Connection conn = getConnection();
 

@@ -36,7 +36,10 @@ public interface BoardService {
 	public void increaseCountComment(int BOARD_CODE);
 	public void decreaseCountComment(int BOARD_CODE);
 
+	
+	// FILE_CODE로 첨부파일 내용 가져오기
+	public FilesVO selectOneFile(int FILE_CODE);
 
-	// 첨부파일 내용
-	public FilesVO selectFileContents(int FILE_CODE);
+	// 어떤 게시물의 첨부파일 내용
+	public FilesVO selectFileContents(int BOARD_CODE);
 }

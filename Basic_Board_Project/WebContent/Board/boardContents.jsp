@@ -1,3 +1,4 @@
+<%@page import="java.io.File"%>
 <%@ page language="java" contentType="text/html; charset=utf-8"
    pageEncoding="utf-8" import="com.VO.UsersVO, com.VO.BoardsVO"%>
 
@@ -48,6 +49,7 @@
 <body>
    <c:set var="user" value="${userContents}" />
    <c:set var="board" value="${boardContents}" />
+   <c:set var="file" value="${fileContents}" />
    <div class="container mx-auto m-5 p-5 bg-ligth shadow">
 		<table style="width: 100%; cellpadding: 0; cellspacing: 0; border: 0;">
 			<tr>
@@ -101,7 +103,9 @@
 						<tr>
 							<!-- 첨부파일 내용 추가할 부분 -->
 							<td width="0">&nbsp;</td>
-							<td width="399" colspan="2" height="200">
+							<td width="399" height="50">
+							파일  <a href="/Basic_Board_Project/FileController?FILE_CODE=${file.FILE_CODE }">${file.FILE_STORED_NAME }</a>
+							</td>
 						</tr>
 						<tr height="1" bgcolor="#dddddd">
 							<td colspan="4" width="407"></td>
@@ -112,10 +116,9 @@
 								<%
 									BoardsVO ELboard = (BoardsVO) request.getAttribute("boardContents");
 									if (USER_CODE == ELboard.getUSER_CODE()) {
-								%> <a class="btn btn-dark"
-								href="/Basic_Board_Project/BoardController?action=updateReady&BOARD_CODE=${board.BOARD_CODE}">수정</a>
-								<a class="btn btn-dark"
-								href="/Basic_Board_Project/BoardController?action=delete&BOARD_CODE=${board.BOARD_CODE}">삭제</a>
+								%>
+								<a class="btn btn-dark" href="/Basic_Board_Project/BoardController?action=updateReady&BOARD_CODE=${board.BOARD_CODE}">수정</a>
+								<a class="btn btn-dark" href="/Basic_Board_Project/BoardController?action=delete&BOARD_CODE=${board.BOARD_CODE}">삭제</a>
 								<%
 									}
 								%>
