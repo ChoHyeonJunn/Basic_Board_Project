@@ -11,8 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.DAO.user.UserDAO;
-import com.DAO.user.UserDAOImpl;
 import com.VO.UsersVO;
 import com.service.user.UserService;
 import com.service.user.UserServiceImpl;
@@ -27,11 +25,10 @@ public class UserController extends HttpServlet {
 	private PrintWriter out;
 
 	private UserService userService = new UserServiceImpl();
-	
+
 	HttpSession session;
 	String msg;
-	
-	
+
 	public UserController() {
 		super();
 	}
@@ -52,32 +49,32 @@ public class UserController extends HttpServlet {
 		}
 
 		switch (action) {
-		
+
 		// 회원가입
 		case "insert":
 			insertUser();
 			break;
-		
+
 		// 로그인
 		case "login":
 			login();
 			break;
-		
+
 		// 로그아웃
 		case "logout":
 			logout();
 			break;
-		
+
 		// 회원정보 수정 화면
 		case "edit":
 			viewEdit();
 			break;
-		
+
 		// 회원정보 수정
 		case "update":
 			update();
 			break;
-			
+
 		case "delete":
 			delete();
 			break;
@@ -104,88 +101,87 @@ public class UserController extends HttpServlet {
 		}
 	}
 
-
 	// 로그인
 	private void login() {
-		
+
 		UsersVO requestUser = new UsersVO();
-		
+
 		requestUser.setUSERID(request.getParameter("USERID"));
 		requestUser.setPASSWORD(request.getParameter("PASSWORD"));
-		
+
 		UsersVO loginUser = userService.loginCheck(requestUser);
-		
-		if(loginUser.getStatus() == 1) {	// 로그인 성공
-			
-			view = "/BoardController?action=listBoard";	//다시 BoardController로 액션 보내기!
+
+		if (loginUser.getStatus() == 1) { // 로그인 성공
+
+			view = "/BoardController?action=listBoard"; // 다시 BoardController로 액션 보내기!
 			session = request.getSession();
 			session.setAttribute("loginUser", loginUser);
-	
-		} else {	// 로그인 실패
 
-			if(loginUser.getStatus() == 0) {	// 패스워드 오류
+		} else { // 로그인 실패
+
+			if (loginUser.getStatus() == 0) { // 패스워드 오류
 				msg = "패스워드를 잘못 입력하셨습니다.";
 			} else {
 				msg = "존재하지 않는 아이디입니다.";
 			}
-			
+
 			request.setAttribute("msg", msg);
-			
+
 			view = "/User/loginErrorPage.jsp";
 		}
 	}
-	
+
 	// 로그아웃
 	private void logout() {
 		// 세션 해제!
 		request.getSession().invalidate();
 		view = "/Board/boardList.jsp";
 	}
-	
+
 	// 회원정보 수정 화면
 	private void viewEdit() {
-		//UsersVO userVO = userService.selectOneUser(Integer.parseInt(request.getParameter("USER_CODE")));
-		UsersVO loginUser = (UsersVO) session.getAttribute("loginUser");		
-		
-		if(!request.getParameter("PASSWORD").equals(loginUser.getPASSWORD())) {
+		// UsersVO userVO =
+		// userService.selectOneUser(Integer.parseInt(request.getParameter("USER_CODE")));
+		UsersVO loginUser = (UsersVO) session.getAttribute("loginUser");
+
+		if (!request.getParameter("PASSWORD").equals(loginUser.getPASSWORD())) {
 			msg = "비밀번호가 틀렸습니다.";
 			request.setAttribute("msg", msg);
-			
+
 			view = "/User/loginErrorPage.jsp";
-		}
-		else {
+		} else {
 			request.setAttribute("user", loginUser);
-			view = "/User/updateUser.jsp";	
+			view = "/User/updateUser.jsp";
 		}
 	}
-	
+
 	// 회원정보 수정
 	private void update() {
-		
-		UsersVO loginUser = (UsersVO) session.getAttribute("loginUser");	
-		
+
+		UsersVO loginUser = (UsersVO) session.getAttribute("loginUser");
+
 		String PASSWORD = loginUser.getPASSWORD();
 		String NAME = loginUser.getNAME();
-		
+
 		loginUser.setPASSWORD(request.getParameter("PASSWORD"));
 		loginUser.setNAME(request.getParameter("NAME"));
-		
-		if(userService.updateUser(loginUser)) {			
-			System.out.println("update() 성공!");			
+
+		if (userService.updateUser(loginUser)) {
+			System.out.println("update() 성공!");
 			view = "/User/userContents.jsp";
 
 		} else {
 			System.out.println("[ ERROR ] : UserController - update() 오류");
-			
+
 			loginUser.setPASSWORD(PASSWORD);
 			loginUser.setNAME(NAME);
 		}
 	}
-	
+
 	private void delete() {
 		UsersVO loginUser = (UsersVO) session.getAttribute("loginUser");
 
-		if(userService.deleteUser(loginUser.getUSER_CODE())) {
+		if (userService.deleteUser(loginUser.getUSER_CODE())) {
 			System.out.println("delete() 성공!");
 			request.getSession().invalidate();
 			view = "/Board/boardList.jsp";

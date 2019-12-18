@@ -1,3 +1,4 @@
+<%@page import="java.util.Enumeration"%>
 <%@ page language="java" contentType="text/html; charset=utf-8"
 	pageEncoding="utf-8" import="com.VO.UsersVO"%>
 
@@ -16,6 +17,18 @@
 <head>
 <meta charset="EUC-KR">
 <title>게시글 목록</title>
+<style type="text/css">
+
+
+ 	body{
+		background: url("resources/image/cat1.png");
+		background-size: cover;
+	} 
+ 	@font-face{
+		font-family: "Goyang";
+		src: url("resources/Goyang.ttf") format("truetype");
+	}	 
+</style>
 
 <script type="text/javascript">
 	$(function name() {
@@ -34,7 +47,7 @@
 
 	<div class="container mx-auto m-5 p-5 bg-ligth shadow">
 	
-		<h1>BOARD :: 목록</h1>
+		<h1><a href="/Basic_Board_Project/BoardController?action=listBoard">BOARD :: 목록</a></h1>
 		<%
 			if (NAME != null) {
 		%>
@@ -43,7 +56,7 @@
 
 			<button id="logout" class="btn btn-info">로그아웃</button>
 			<a href="/Basic_Board_Project/User/userContents.jsp" class="btn btn-info">회원정보</a> 
-			<a href="/Basic_Board_Project/BoardController?action=search&opt=3&condition=<%=NAME%>" class="btn btn-info">내가쓴글</a> 
+			<a href="/Basic_Board_Project/BoardController?action=search&option=3&condition=<%=NAME%>" class="btn btn-info">내가쓴글</a> 
 			<br> 
 			<label><%=NAME%>님 환영합니다.</label> 
 			<br> <br>
@@ -52,6 +65,8 @@
 		<%
 		}
 		%>
+		
+		
 		<%
 			if (NAME == null) {
 		%>
@@ -63,14 +78,31 @@
 		%>
 		<div class="container mx-auto m-5 p-5 bg-ligth shadow">
 			<div id="searchForm">
+				<p>옵션 상태 : <%=request.getParameter("option") %></p>
+				<p>검  색  어 : <%=request.getParameter("condition") %></p>				
+				
 				<form action="/Basic_Board_Project/BoardController?action=search" method="post">
-					<select name="opt">
+					<select name="option">
 						<option value="0">제목</option>
 						<option value="1">내용</option>
 						<option value="2">제목+내용</option>
 						<option value="3">글쓴이</option>
-					</select> 
-					<input type="text" size="20" name="condition" />
+					</select>
+					<%
+						String option = request.getParameter("option");
+						String condition = request.getParameter("condition");
+						if (condition == null) {
+					%>
+					<input type="text" size="20" name="condition"/>
+					<%
+						} else {
+							request.setAttribute("option", option);
+							request.setAttribute("condition", condition);
+					%>
+					<input type="text" size="20" name="condition" value="<%=condition%>"/>
+					<%
+						}
+					%>
 					&nbsp; 
 					<input type="submit" value="검색" />
 				</form>
@@ -105,8 +137,20 @@
 		</div>
 		<div class="container-fluid w-50 mx-auto">
 			<ul class="pagination">
+
+
+				<c:set var="option" value="${option}" />
+				<c:set var="condition" value="${condition}" />
+				
+				
 				<c:if test="${ curPageNum > 5 }">
-					<a href="/Basic_Board_Project/BoardController?curPage=${ blockStartNum - 1 }">&nbsp;◀</a>
+					<c:if test="${condition != null }">		
+						<p>${condition}</p>				
+						<a href="/Basic_Board_Project/BoardController?curPage=${ blockStartNum - 1 }&option=3&condition=<%=NAME%>">&nbsp;◀</a>
+					</c:if>
+					<c:if test="${condition == null }">						
+						<a href="/Basic_Board_Project/BoardController?curPage=${ blockStartNum - 1 }">&nbsp;◀</a>
+					</c:if>
 				</c:if>
 
 				<c:forEach var="i" begin="${ blockStartNum }" end="${ blockLastNum }">
@@ -121,15 +165,22 @@
 						</c:when>
 
 						<c:otherwise>
-							<li class="page-item disabled"><a
-								href="/Basic_Board_Project/BoardController?curPage=${ i }">&nbsp;${i}</a></li>
+							<c:if test="${condition != null }">	
+								<p>${condition}</p>		
+								<li class="page-item disabled"><a
+									href="/Basic_Board_Project/BoardController?curPage=${ i }&option=${option}&condition=${condition}">&nbsp;${i}</a></li>
+							</c:if>
+							<c:if test="${condition == null }">
+								<li class="page-item disabled"><a
+									href="/Basic_Board_Project/BoardController?curPage=${ i }">&nbsp;${i}</a></li>
+							</c:if>
 						</c:otherwise>
 
 					</c:choose>
 				</c:forEach>
 
 				<c:if test="${ lastPageNum > blockLastNum }">
-					<a href="/Basic_Board_Project/BoardController?curPage=${ blockLastNum + 1 }">&nbsp;▶</a>
+					<a href="/Basic_Board_Project/BoardController?curPage=${ blockLastNum + 1 }&option=3&condition=<%=NAME%>">&nbsp;▶</a>
 				</c:if>
 			</ul>
 		</div>

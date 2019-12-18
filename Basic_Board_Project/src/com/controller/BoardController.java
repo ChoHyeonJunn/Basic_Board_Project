@@ -2,7 +2,6 @@ package com.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Enumeration;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -12,11 +11,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.VO.BoardsVO;
+import com.VO.CommentsVO;
 import com.VO.FilesVO;
 import com.oreilly.servlet.MultipartRequest;
 import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
-
-import com.VO.CommentsVO;
 import com.service.board.BoardService;
 import com.service.board.BoardServiceImpl;
 import com.service.board.Paging;
@@ -174,15 +172,17 @@ public class BoardController extends HttpServlet {
 	}
 
 	private boolean searchList() {
+		String option = null;
+		String condition = null;
+
 		if (request.getParameter("condition") == "") {
-			System.out.println("키워드가 없습니다!");
 			return false;
 		} else {
-			int option = Integer.parseInt(request.getParameter("opt"));
-			String condition = request.getParameter("condition");
+			option = request.getParameter("option");
+			condition = request.getParameter("condition");
 
 			Paging paging = new Paging();
-			paging.makeLastPageNum(option, condition);
+			paging.makeLastPageNum(Integer.parseInt(option), condition);
 
 			int curPage = 1; // 현재 페이지
 			if (request.getParameter("curPage") != null) {
@@ -201,8 +201,11 @@ public class BoardController extends HttpServlet {
 			request.setAttribute("blockStartNum", blockStartNum);
 			request.setAttribute("blockLastNum", blockLastNum);
 			request.setAttribute("lastPageNum", lastPageNum);
+			
+			request.setAttribute("option", option);
+			request.setAttribute("condition", condition);
 
-			request.setAttribute("boardList", boardService.selectSearchListData(curPage, option, condition));
+			request.setAttribute("boardList", boardService.selectSearchListData(curPage, Integer.parseInt(option), condition));
 
 			view = "/Board/boardList.jsp";
 
@@ -229,8 +232,7 @@ public class BoardController extends HttpServlet {
 
 		try {
 
-			mr = new MultipartRequest(request,
-					FILE_PATH, // 파일이 저장될 폴더
+			mr = new MultipartRequest(request, FILE_PATH, // 파일이 저장될 폴더
 					maxSize, // 최대 업로드크기 (5MB)
 					encoding, // 인코딩 방식
 					new DefaultFileRenamePolicy() // 동일한 파일명이 존재하면 파일명 뒤에 일련번호를 부여
@@ -241,7 +243,6 @@ public class BoardController extends HttpServlet {
 			e1.printStackTrace();
 		}
 
-		
 		// 게시글 등록
 		BoardsVO insertBoard = new BoardsVO();
 
@@ -255,34 +256,33 @@ public class BoardController extends HttpServlet {
 			System.out.println("[ ERROR ] : BoardController - insertBoard() 게시물 등록 오류");
 		}
 
-		
 		// 파일 첨부
-		//Enumeration<?> files = mr.getFileNames();	// 다중파일일 경우
+		// Enumeration<?> files = mr.getFileNames(); // 다중파일일 경우
 
 		String FILE_ORIGINAL_NAME = null, FILE_STORED_NAME = null, FILE_SIZE = null;
 		String fileType = null;
 		String fileExtend = null;
 
-		//while (files.hasMoreElements()) {
+		// while (files.hasMoreElements()) {
 
-			// 실제 저장된 파일명
-			FILE_STORED_NAME = mr.getFilesystemName("FILE");
+		// 실제 저장된 파일명
+		FILE_STORED_NAME = mr.getFilesystemName("FILE");
 
-			if (FILE_STORED_NAME != null) {
+		if (FILE_STORED_NAME != null) {
 
-				// 원래 파일명
-				FILE_ORIGINAL_NAME = mr.getOriginalFileName("FILE");
+			// 원래 파일명
+			FILE_ORIGINAL_NAME = mr.getOriginalFileName("FILE");
 
-				// 파일 크기
-				FILE_SIZE = String.valueOf(mr.getFile("FILE").length());
+			// 파일 크기
+			FILE_SIZE = String.valueOf(mr.getFile("FILE").length());
 
-				// 파일 타입
-				fileType = mr.getContentType("FILE");
+			// 파일 타입
+			fileType = mr.getContentType("FILE");
 
-				// 파일 확장자
-				fileExtend = FILE_STORED_NAME.substring(FILE_STORED_NAME.lastIndexOf(".") + 1);
-			}
-		//}
+			// 파일 확장자
+			fileExtend = FILE_STORED_NAME.substring(FILE_STORED_NAME.lastIndexOf(".") + 1);
+		}
+		// }
 
 		FilesVO insertFile = new FilesVO();
 
