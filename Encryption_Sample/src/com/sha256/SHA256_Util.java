@@ -1,9 +1,9 @@
-package com.sha_256;
+package com.sha256;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-public class SHA_Util {
+public class SHA256_Util {
 	/*
 	 * sha-256 암호화 방법
 	 * 

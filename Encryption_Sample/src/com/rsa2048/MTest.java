@@ -1,4 +1,4 @@
-package com.rsa;
+package com.rsa2048;
 
 import java.security.Key;
 import java.util.Map;
@@ -6,7 +6,7 @@ import java.util.Map;
 public class MTest {
 	public static void main(String[] args) {
 		
-		RSA_Util rsa = new RSA_Util();
+		RSA2048_Util rsa = new RSA2048_Util();
 		
 		Map<String, Key> keyMap = rsa.generateKey();
 		
