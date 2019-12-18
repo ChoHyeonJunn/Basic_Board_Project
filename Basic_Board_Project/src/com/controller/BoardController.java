@@ -144,7 +144,10 @@ public class BoardController extends HttpServlet {
 
 	// 게시글 리스트
 	private void selectList() throws IOException {
-		if (request.getParameter("condition") != null && request.getParameter("option") != null) {
+		if (request.getParameter("condition") != null && request.getParameter("condition") != "") {
+			System.out.println(request.getParameter("condition"));
+			System.out.println(request.getParameter("option"));
+			System.out.println("검색 변수가 존재해요");
 			searchList();
 			return;
 		}
@@ -179,6 +182,9 @@ public class BoardController extends HttpServlet {
 		String condition = null;
 
 		if (request.getParameter("condition") == "") {
+			request.removeAttribute("option");
+			request.removeAttribute("condition");
+			System.out.println("검색어가 없어요");
 			return false;
 		} else {
 			option = request.getParameter("option");

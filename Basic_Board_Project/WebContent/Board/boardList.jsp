@@ -10,6 +10,10 @@
 	UsersVO loginUser = (UsersVO) session.getAttribute("loginUser");
 	if (loginUser != null)
 		NAME = loginUser.getNAME();
+	
+
+	String option = request.getParameter("option");
+	String condition = request.getParameter("condition");
 %>
 
 <!DOCTYPE html>
@@ -67,14 +71,12 @@
 			<div id="searchForm">				
 				<form action="/Basic_Board_Project/BoardController?action=search" method="post">
 					<select name="option">
-						<option value="0">제목</option>
-						<option value="1">내용</option>
-						<option value="2">제목+내용</option>
-						<option value="3">글쓴이</option>
+						<option value="0" <c:if test="${option == '0'}">selected</c:if>>제목</option>
+						<option value="1" <c:if test="${option == '1'}">selected</c:if>>내용</option>
+						<option value="2" <c:if test="${option == '2'}">selected</c:if>>제목+내용</option>
+						<option value="3" <c:if test="${option == '3'}">selected</c:if>>글쓴이</option>
 					</select>
 					<%
-						String option = request.getParameter("option");
-						String condition = request.getParameter("condition");
 						
 						if (condition == null) {
 					%>
@@ -84,7 +86,7 @@
 							request.setAttribute("option", option);
 							request.setAttribute("condition", condition);
 					%>
-					<input type="text" size="20" name="condition" value="<%=condition%>"/>
+					<input type="text" size="20" name="condition" value="${condition}"/>
 					<%
 						}
 					%>
