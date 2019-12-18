@@ -101,7 +101,6 @@
 						</tr>
 
 						<tr>
-							<!-- 첨부파일 내용 추가할 부분 -->
 							<td width="0">&nbsp;</td>
 							<td width="399" height="50">
 							파일  <a href="/Basic_Board_Project/FileController?FILE_CODE=${file.FILE_CODE }">${file.FILE_STORED_NAME }</a>
