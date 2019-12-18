@@ -145,6 +145,10 @@ public class BoardController extends HttpServlet {
 
 	// 게시글 리스트
 	private void selectList() throws IOException {
+		if (request.getParameter("condition") != "") {
+			searchList();
+			return;
+		}
 		Paging paging = new Paging();
 		paging.makeLastPageNum();
 
@@ -201,11 +205,12 @@ public class BoardController extends HttpServlet {
 			request.setAttribute("blockStartNum", blockStartNum);
 			request.setAttribute("blockLastNum", blockLastNum);
 			request.setAttribute("lastPageNum", lastPageNum);
-			
+
 			request.setAttribute("option", option);
 			request.setAttribute("condition", condition);
 
-			request.setAttribute("boardList", boardService.selectSearchListData(curPage, Integer.parseInt(option), condition));
+			request.setAttribute("boardList",
+					boardService.selectSearchListData(curPage, Integer.parseInt(option), condition));
 
 			view = "/Board/boardList.jsp";
 
