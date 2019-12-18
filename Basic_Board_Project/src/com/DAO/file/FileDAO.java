@@ -10,6 +10,9 @@ public interface FileDAO {
 
 	public int insertFile(FilesVO file);
 	
+	// FILE_CODE로 첨부파일 내용 가져오기
+	public FilesVO selectOneFile(int FILE_CODE);
+	
 	// 어떤 게시글의 첨부파일 가져오기
-	public FilesVO selectFileContent(int FILE_CODE);
+	public FilesVO selectFileContents(int BOARD_CODE);
 }

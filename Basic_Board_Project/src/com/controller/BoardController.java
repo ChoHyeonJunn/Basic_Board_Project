@@ -2,7 +2,6 @@ package com.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -220,7 +219,6 @@ public class BoardController extends HttpServlet {
 	}
 
 	// 게시글 등록
-
 	private void insertBoard() {
 
 		// 업로드될 경로
@@ -320,11 +318,12 @@ public class BoardController extends HttpServlet {
 		request.setAttribute("userContents", boardService.selectBoardContents(BOARD_CODE).get("usersVO"));
 		request.setAttribute("commentsList", commentService.selectComments(BOARD_CODE));
 
-		view = "/Board/boardContents.jsp";
-
 		// 첨부파일 내용
+		request.setAttribute("fileContents", boardService.selectFileContents(BOARD_CODE));
 
+		view = "/Board/boardContents.jsp";
 	}
+	
 
 	private void updateReady() {
 		int BOARD_CODE = Integer.parseInt(request.getParameter("BOARD_CODE"));
