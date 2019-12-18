@@ -10,27 +10,12 @@
 	UsersVO loginUser = (UsersVO) session.getAttribute("loginUser");
 	if (loginUser != null)
 		NAME = loginUser.getNAME();
-	
-
-	String option = request.getParameter("option");
-	String condition = request.getParameter("condition");
 %>
 
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="EUC-KR">
-<title>게시글 목록</title>
-<style type="text/css">
-/*  	body{
-		background: url("resources/image/cat1.png");
-		background-size: cover;
-	} 
- 	@font-face{
-		font-family: "Goyang";
-		src: url("resources/Goyang.ttf") format("truetype");
-	}	 */ 
-</style>
 
 <script type="text/javascript">
 	$(function name() {
@@ -79,10 +64,7 @@
 			}
 		%>
 		<div class="container mx-auto m-5 p-5 bg-ligth shadow">
-			<div id="searchForm">
-				<p>옵션 상태 : <%=option %></p>
-				<p>검  색  어 : <%=condition %></p>				
-				
+			<div id="searchForm">				
 				<form action="/Basic_Board_Project/BoardController?action=search" method="post">
 					<select name="option">
 						<option value="0">제목</option>
@@ -91,6 +73,9 @@
 						<option value="3">글쓴이</option>
 					</select>
 					<%
+						String option = request.getParameter("option");
+						String condition = request.getParameter("condition");
+						
 						if (condition == null) {
 					%>
 					<input type="text" size="20" name="condition"/>
@@ -166,7 +151,6 @@
 
 						<c:otherwise>
 							<c:if test="${condition != null }">	
-								<p>${condition}</p>		
 								<li class="page-item disabled"><a
 									href="/Basic_Board_Project/BoardController?curPage=${ i }&option=${option}&condition=${condition}">&nbsp;${i}</a></li>
 							</c:if>

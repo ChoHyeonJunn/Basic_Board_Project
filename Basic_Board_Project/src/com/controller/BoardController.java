@@ -145,7 +145,7 @@ public class BoardController extends HttpServlet {
 
 	// 게시글 리스트
 	private void selectList() throws IOException {
-		if (request.getParameter("condition") != "") {
+		if (request.getParameter("condition") != null && request.getParameter("option") != null) {
 			searchList();
 			return;
 		}
