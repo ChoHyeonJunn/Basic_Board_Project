@@ -118,6 +118,7 @@ public class BoardServiceImpl implements BoardService {
 	public void decreaseCountComment(int BOARD_CODE) {
 		boardDAO.decreaseCountComment(BOARD_CODE);
 	}
+	
 
 	// 어떤 게시물의 첨부파일 내용
 	@Override
@@ -135,6 +136,17 @@ public class BoardServiceImpl implements BoardService {
 		FilesVO fileContents = fileDAO.selectOneFile(FILE_CODE);
 		
 		return fileContents;
+	}
+
+	// 어떤 게시글의 첨부파일 삭제
+	@Override
+	public boolean deleteFile(int FILE_CODE) {
+		
+		if(fileDAO.deleteFile(FILE_CODE) > 0) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 }

@@ -14,14 +14,12 @@ public class FilesVO {
 	private String FILE_SIZE;
 	private Date CREATE_DATE;
 
-	private boolean DEL_YN;
-
 	public FilesVO() {
 		super();
 	}
 
 	public FilesVO(int fILE_CODE, int bOARD_CODE, int uSER_CODE, String fILE_ORIGINAL_NAME, String fILE_STORED_NAME,
-			String fILE_PATH, String fILE_SIZE, Date cREATE_DATE, boolean dEL_YN) {
+			String fILE_PATH, String fILE_SIZE, Date cREATE_DATE) {
 		super();
 		FILE_CODE = fILE_CODE;
 		BOARD_CODE = bOARD_CODE;
@@ -31,7 +29,6 @@ public class FilesVO {
 		FILE_PATH = fILE_PATH;
 		FILE_SIZE = fILE_SIZE;
 		CREATE_DATE = cREATE_DATE;
-		DEL_YN = dEL_YN;
 	}
 
 	public int getFILE_CODE() {
@@ -98,20 +95,11 @@ public class FilesVO {
 		CREATE_DATE = cREATE_DATE;
 	}
 
-	public boolean isDEL_YN() {
-		return DEL_YN;
-	}
-
-	public void setDEL_YN(boolean dEL_YN) {
-		DEL_YN = dEL_YN;
-	}
-
 	@Override
 	public String toString() {
 		return "FilesVO [FILE_CODE=" + FILE_CODE + ", BOARD_CODE=" + BOARD_CODE + ", USER_CODE=" + USER_CODE
 				+ ", FILE_ORIGINAL_NAME=" + FILE_ORIGINAL_NAME + ", FILE_STORED_NAME=" + FILE_STORED_NAME
-				+ ", FILE_PATH=" + FILE_PATH + ", FILE_SIZE=" + FILE_SIZE + ", CREATE_DATE=" + CREATE_DATE + ", DEL_YN="
-				+ DEL_YN + "]";
+				+ ", FILE_PATH=" + FILE_PATH + ", FILE_SIZE=" + FILE_SIZE + ", CREATE_DATE=" + CREATE_DATE + "]";
 	}
 
 }

@@ -23,11 +23,9 @@
 
 <script type="text/javascript">
 	$(function name() {
-		$("#logout")
-				.click(
-						function() {
-							location.href = "/Basic_Board_Project/UserController?action=logout";
-						});
+		$("#logout").click(function() {
+			location.href = "/Basic_Board_Project/UserController?action=logout";
+		});
 	});
 </script>
 
@@ -61,9 +59,8 @@
 		<%
 			if (NAME == null) {
 		%>
-		<a href="/Basic_Board_Project/User/insertUser.jsp"
-			class="btn btn-info">회원가입</a> <a
-			href="/Basic_Board_Project/User/login.jsp" class="btn btn-info">로그인</a>
+		<a href="/Basic_Board_Project/UserController?action=insertForm" class="btn btn-info">회원가입</a>
+		<a href="/Basic_Board_Project/UserController?action=loginForm" class="btn btn-info">로그인</a>
 		<%
 			}
 		%>
@@ -174,8 +171,7 @@
 		<%
 			if (NAME != null) {
 		%>
-		<a href="/Basic_Board_Project/Board/insertBoard.jsp"
-			class="btn btn-info">글쓰기</a>
+		<a href="/Basic_Board_Project/Board/insertBoard.jsp" class="btn btn-info">글쓰기</a>
 		<%
 			}
 		%>

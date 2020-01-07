@@ -2,7 +2,12 @@ package com.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
+import java.security.PrivateKey;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,6 +19,9 @@ import javax.servlet.http.HttpSession;
 import com.VO.UsersVO;
 import com.service.user.UserService;
 import com.service.user.UserServiceImpl;
+import com.utility.rsa.RSA;
+import com.utility.rsa.RSAUtil;
+import com.utility.sha.SHA256_Util;
 
 @WebServlet("/UserController")
 public class UserController extends HttpServlet {
@@ -49,12 +57,22 @@ public class UserController extends HttpServlet {
 		}
 
 		switch (action) {
+		
+		// 회원가입 화면 진입 (RSA키 생성을 위함)
+		case "insertForm":
+			insertUserForm();
+			break;
 
 		// 회원가입
 		case "insert":
 			insertUser();
 			break;
 
+		// 로그인 화면 진입 (RSA키 생성을 위함)
+		case "loginForm":
+			loginForm();
+			break;
+			
 		// 로그인
 		case "login":
 			login();
@@ -84,37 +102,150 @@ public class UserController extends HttpServlet {
 		dispatcher.forward(request, response);
 		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
+	
+	RSAUtil rsaUtil = new RSAUtil();
 
+	// 회원가입 화면 진입 (RSA키 생성을 위함)
+	private void insertUserForm() {
+		
+		session = request.getSession();
+		
+		// 기존 key 파기
+		if(session.getAttribute("RSAprivateKey") != null)
+			session.removeAttribute("RSAprivateKey");
+		
+		RSA rsa = rsaUtil.createRSA();
+		
+		request.setAttribute("modulus", rsa.getModulus());
+		request.setAttribute("exponent", rsa.getExponent());
+		session.setAttribute("RSAprivateKey", rsa.getPrivateKey());
+		
+		view = "/User/insertUser.jsp";
+	}
+
+	SHA256_Util shaUtil = new SHA256_Util();
 	// 회원가입
 	private void insertUser() throws IOException {
+		
 		UsersVO user = new UsersVO();
-
-		user.setUSERID(request.getParameter("USERID"));
-		user.setPASSWORD(request.getParameter("PASSWORD"));
-		user.setNAME(request.getParameter("NAME"));
+		PrivateKey privateKey = null;
+		
+		String requestUSERID = request.getParameter("USERID");
+		String requestPASSWORD = request.getParameter("PASSWORD");
+		String requestNAME = request.getParameter("NAME");
+		
+		System.out.println("복호화 전 USERID : " + requestUSERID);
+		System.out.println("복호화 전 PASSWORD : " + requestPASSWORD);
+		System.out.println("복호화 전 NAME : " + requestNAME);
+		
+		if(session.getAttribute("RSAprivateKey") == null) {
+			System.out.println("session에 RSAprivateKey가 존재하지 않습니다.");
+			view = "/User/insertUser.jsp";
+		} else {
+			// 개인키 취득
+			privateKey = (PrivateKey) session.getAttribute("RSAprivateKey");
+			// session에 저장된 개인키 초기화
+			session.removeAttribute("RSAprivateKey");
+		}
+		
+		String USERID = null;
+		String PASSWORD = null;
+		String NAME = null;
+		
+		// 복호화
+		try {
+			USERID = rsaUtil.getDecryptText(privateKey, requestUSERID);
+			PASSWORD = rsaUtil.getDecryptText(privateKey, requestPASSWORD);
+			NAME = rsaUtil.getDecryptText(privateKey, requestNAME);
+			
+			user.setUSERID(USERID);
+			user.setPASSWORD(shaUtil.encryptSHA256(PASSWORD));	// SHA로 다시 암호화해서 DB 저장
+			user.setNAME(NAME);
+			
+		} catch (InvalidKeyException | IllegalBlockSizeException | BadPaddingException
+				| UnsupportedEncodingException e1) {
+			e1.printStackTrace();
+		}
+		
+		System.out.println("복호화 후 USERID : " + USERID);
+		System.out.println("복호화 후 PASSWORD : " + PASSWORD);
+		System.out.println("복호화 후 NAME : " + NAME);
 
 		if (userService.insertUser(user)) {
 			System.out.println("USERS DB 입력 성공!");
-			view = "/User/login.jsp";
+			view = "/UserController?action=loginForm";
 		} else {
 			throw new IOException("USERS DB 입력 오류");
 		}
 	}
-
-	// 로그인
+	
+	// 로그인 화면 진입 (RSA키 생성을 위함)
+	private void loginForm() {
+		
+		session = request.getSession();
+		
+		// 기존 key 파기
+		if(session.getAttribute("RSAprivateKey") != null)
+			session.removeAttribute("RSAprivateKey");
+		
+		RSA rsa = rsaUtil.createRSA();
+		
+		request.setAttribute("modulus", rsa.getModulus());
+		request.setAttribute("exponent", rsa.getExponent());
+		session.setAttribute("RSAprivateKey", rsa.getPrivateKey());
+		
+		view = "/User/login.jsp";
+	}
+	
+	// 로그인 처리
 	private void login() {
 
 		UsersVO requestUser = new UsersVO();
+		PrivateKey privateKey = null;
+		
+		String requestUSERID = request.getParameter("USERID");
+		String requestPASSWORD = request.getParameter("PASSWORD");
+		
+		System.out.println("복호화 전 USERID : " + requestUSERID);
+		System.out.println("복호화 전 PASSWORD : " + requestPASSWORD);
+		
+		if(session.getAttribute("RSAprivateKey") == null) {
+			System.out.println("session에 RSAprivateKey가 존재하지 않습니다.");
+			view = "/User/login.jsp";
+		} else {
+			// 개인키 취득
+			privateKey = (PrivateKey) session.getAttribute("RSAprivateKey");
+			// session에 저장된 개인키 초기화
+			session.removeAttribute("RSAprivateKey");
+		}
+		
+		String USERID = null;
+		String PASSWORD = null;
+		
+		// 복호화
+		try {
+			USERID = rsaUtil.getDecryptText(privateKey, requestUSERID);
+			PASSWORD = rsaUtil.getDecryptText(privateKey, requestPASSWORD);
 
-		requestUser.setUSERID(request.getParameter("USERID"));
-		requestUser.setPASSWORD(request.getParameter("PASSWORD"));
-
+			requestUser.setUSERID(USERID);
+			requestUser.setPASSWORD(shaUtil.encryptSHA256(PASSWORD));	// sha로 다시 암호화
+			
+		} catch (InvalidKeyException | IllegalBlockSizeException | BadPaddingException
+				| UnsupportedEncodingException e1) {
+			e1.printStackTrace();
+		}
+		
+		System.out.println("복호화 후 USERID : " + USERID);
+		System.out.println("복호화 후 PASSWORD : " + PASSWORD);
+		
 		UsersVO loginUser = userService.loginCheck(requestUser);
 
-		if (loginUser.getStatus() == 1) { // 로그인 성공
+			if (loginUser.getStatus() == 1) { // 로그인 성공
 
 			view = "/BoardController?action=listBoard"; // 다시 BoardController로 액션 보내기!
+			
 			session = request.getSession();
+			
 			session.setAttribute("loginUser", loginUser);
 
 		} else { // 로그인 실패

@@ -42,4 +42,7 @@ public interface BoardService {
 
 	// 어떤 게시물의 첨부파일 내용
 	public FilesVO selectFileContents(int BOARD_CODE);
+	
+	// 어떤 게시글의 첨부파일 삭제하기
+	public boolean deleteFile(int FILE_CODE);
 }

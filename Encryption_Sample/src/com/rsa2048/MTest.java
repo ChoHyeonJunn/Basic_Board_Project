@@ -14,19 +14,19 @@ public class MTest {
 		Key privateKey = keyMap.get("privateKey");
 		
 		String plainStr = "123456";
-		System.out.println("Æò¹® : " + plainStr);
+		System.out.println("í‰ë¬¸ : " + plainStr);
 		
 		System.out.println("\n===========================");		
 		byte[] cryptogramByte = rsa.Encryption(plainStr, publicKey);
 		String cryptogram = new String(cryptogramByte);		
-		System.out.println("¾ÏÈ£¹®(byte) : " + cryptogramByte);
-		System.out.println("¾ÏÈ£¹®(String) : " + cryptogram);
+		System.out.println("ì•”í˜¸ë¬¸(byte) : " + cryptogramByte);
+		System.out.println("ì•”í˜¸ë¬¸(String) : " + cryptogram);
 		
 		System.out.println("\n===========================");
 		byte[] plainByte = rsa.Decryption(cryptogramByte, privateKey);
 		String plain = new String(plainByte);
-		System.out.println("º¹È£¹®(byte) : " + plainByte);
-		System.out.println("º¹È£¹®(String) : " + plain);
+		System.out.println("ë³µí˜¸ë¬¸(byte) : " + plainByte);
+		System.out.println("ë³µí˜¸ë¬¸(String) : " + plain);
 		
 	}
 }

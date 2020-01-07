@@ -18,6 +18,30 @@
 <head>
 <meta charset="EUC-KR">
 <title>글쓰기</title>
+
+	<script type="text/javascript">
+	
+		$(function() {
+			$("#deleteFile").on("click", function(e) {
+				e.preventDefault();
+				deleteFile($(this));
+			})
+		})
+		
+		function deleteFile(obj) {
+			obj.parent().remove();
+			
+			var str = "<p><input type='file' name='FILE'><a class='btn btn-warning' id='deleteFile'>삭제</a>"
+			$("#fileDiv").append(str);
+			
+			$("#deleteFile").on("click", function(e) {
+				e.preventDefault();
+				deleteFile($(this));
+			})
+		}
+	
+	</script>
+
 </head>
 <body>
 
@@ -31,47 +55,64 @@
 		%>
 	<form action="/Basic_Board_Project/BoardController?action=insert&USER_CODE=<%=USER_CODE%>"	method="post" enctype="multipart/form-data">
 		<table>
-			<tr>
-				<td>&nbsp;</td>
-				<td align="center">제목</td>
-				<td><input type="text" name="TITLE" size="50" maxlength="100"></td>
-				<td>&nbsp;</td>
-			</tr>
-			<tr height="1" bgcolor="#dddddd">
-				<td colspan="4"></td>
-			</tr>
+			<colgroup>
+				<col width="15%">
+				<col width="*">
+			</colgroup>
+			
+			<tbody>
+				<tr>
+					<td>&nbsp;</td>
+					<th colspan="2">작성자</th>
+					<td><%= NAME %></td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr height="1" bgcolor="#dddddd">
+					<td colspan="4"></td>
+				</tr>
+				
+				<tr>
+					<td>&nbsp;</td>
+					<td colspan="2">제목</td>
+					<td><input type="text" name="TITLE" size="100" maxlength="100"></td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr height="1" bgcolor="#dddddd">
+					<td colspan="4"></td>
+				</tr>
+	
+				<tr>
+					<td>&nbsp;</td>
+					<td colspan="2">내용</td>
+					<td><textarea name="CONTEXT" cols="100" rows="20"></textarea></td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr height="1" bgcolor="#dddddd">
+					<td colspan="4"></td>
+				</tr>
+				<tr height="1" bgcolor="#82B5DF">
+					<td colspan="4"></td>
+				</tr>
+			</tbody>
 
-			<tr>
-				<td>&nbsp;</td>
-				<td align="center">내용</td>
-				<td><textarea name="CONTEXT" cols="50" rows="13"></textarea></td>
-				<td>&nbsp;</td>
-			</tr>
-			<tr height="1" bgcolor="#dddddd">
-				<td colspan="4"></td>
-			</tr>
-			<tr height="1" bgcolor="#82B5DF">
-				<td colspan="4"></td>
-			</tr>
-			
-			<tr>
-				<td>&nbsp;</td>
-				<td align="center">첨부 파일</td>
-				<td><input type="file" name="FILE"></td>
-				<td>&nbsp;</td>
-			</tr>
-			<tr height="1" bgcolor="#dddddd">
-				<td colspan="4"></td>
-			</tr>			
-			
-			<tr align="center">
-				<td>&nbsp;</td>
-				<td colspan="2">
-				<input type="submit" value="등록" class="btn btn-info" > 
-				<a href="javascript:history.go(-1)" class="btn btn-info">돌아가기</a>
-				<td>&nbsp;</td>
-			</tr>
 		</table>
+		
+		<br><br>
+		
+		<div id="fileDiv">
+			<p>
+				<input type="file" name="FILE">
+				<a class="btn btn-warning" id="deleteFile">삭제</a>
+			</p>
+		</div>
+		
+		<br><hr>
+		
+		<div align="center">
+			<input type="submit" value="등록" class="btn btn-info" > 
+			<a href="javascript:history.go(-1)" class="btn btn-info">돌아가기</a>
+		</div>
 	</form>
+	
 </body>
 </html>
