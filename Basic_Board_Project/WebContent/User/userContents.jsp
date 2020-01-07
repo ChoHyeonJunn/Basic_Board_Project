@@ -10,13 +10,14 @@
 
 <%
 	int USER_CODE = 0;
-   String NAME = null, USERID = null, PASSWORD = null;
-   Date CREATE_DATE = null;
+	String NAME = null, USERID = null, PASSWORD = null;
+	Date CREATE_DATE = null;
    
-   UsersVO loginUser = (UsersVO) session.getAttribute("loginUser");
-   if (loginUser != null) {
-	   USER_CODE = loginUser.getUSER_CODE();
-	   USERID = loginUser.getUSERID();
+	UsersVO loginUser = (UsersVO) session.getAttribute("loginUser");
+	
+	if (loginUser != null) {
+		USER_CODE = loginUser.getUSER_CODE();
+		USERID = loginUser.getUSERID();
 		NAME = loginUser.getNAME();
 		PASSWORD = loginUser.getPASSWORD();
 		CREATE_DATE = loginUser.getCREATE_DATE();
@@ -29,11 +30,11 @@
 
 <script type="text/javascript">
 	// 수정 확인
-	function check(USER_CODE) {
+/* 	function check(USER_CODE) {
 		PASSWORD = prompt('수정하려면 비밀번호를 입력하세요.');
 		document.location.href = "/Basic_Board_Project/UserController?action=edit&USER_CODE=" + USER_CODE
 				+ "&PASSWORD=" + PASSWORD;
-	}
+	} */
 	
 	// 탈퇴 확인
 	function delcheck(USER_CODE) {
@@ -78,7 +79,7 @@
 			</table>
 		</div>
 		
-		<a href="javascript:check(<%= USER_CODE %>)" class="btn btn-warning">수정</a>
+		<a href="/Basic_Board_Project/UserController?action=edit" class="btn btn-warning">수정</a>
 		<a href="javascript:delcheck(<%= USER_CODE%>)" class="btn btn-danger">탈퇴</a>
 		
 </div>

@@ -61,9 +61,8 @@
 		<%
 			if (NAME == null) {
 		%>
-		<a href="/Basic_Board_Project/User/insertUser.jsp"
-			class="btn btn-info">회원가입</a> <a
-			href="/Basic_Board_Project/User/login.jsp" class="btn btn-info">로그인</a>
+		<a href="/Basic_Board_Project/UserController?action=insertUserPage" class="btn btn-info">회원가입</a> 
+		<a href="/Basic_Board_Project/UserController?action=loginPage" class="btn btn-info">로그인</a>
 		<%
 			}
 		%>
