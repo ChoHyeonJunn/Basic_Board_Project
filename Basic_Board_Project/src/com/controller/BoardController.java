@@ -2,6 +2,8 @@ package com.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Enumeration;
+
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -52,48 +54,62 @@ public class BoardController extends HttpServlet {
 		}
 
 		switch (action) {
+		
 		case "listBoard":
 			selectList();
 			break;
+			
 		case "insert":
 			insertBoard();
 			selectList();
 			break;
+			
 		case "boardContents":
 			boardContents();
 			break;
+			
 		case "updateReady":
 			updateReady();
 			break;
+			
 		case "update":
 			update();
 			boardContents();
 			break;
+			
 		case "delete":
 			delete();
 			selectList();
 			break;
+			
+		case "deleteFile":
+			deleteFile();
+			break;
+			
 		case "search":
 			if (!searchList()) {
 				selectList();
 			}
 			break;
+			
 		case "insertComment":
 			insertComment();
 			boardContents();
 			break;
+			
 		case "updateComment":
 			updateComment();
 			boardContents();
 			break;
+			
 		case "deleteComment":
 			deleteComment();
 			boardContents();
 			break;
+			
 		case "statusComment":
 			statusComment();
 			boardContents();
-
 		}
 
 		RequestDispatcher dispatcher = request.getRequestDispatcher(view);
@@ -266,32 +282,33 @@ public class BoardController extends HttpServlet {
 		}
 
 		// 파일 첨부
-		// Enumeration<?> files = mr.getFileNames(); // 다중파일일 경우
+		//Enumeration<?> files = mr.getFileNames(); // 다중파일일 경우
 
 		String FILE_ORIGINAL_NAME = null, FILE_STORED_NAME = null, FILE_SIZE = null;
 		String fileType = null;
 		String fileExtend = null;
 
-		// while (files.hasMoreElements()) {
+		//while (files.hasMoreElements()) {
+			//String parameter = (String) files.nextElement();
 
-		// 실제 저장된 파일명
-		FILE_STORED_NAME = mr.getFilesystemName("FILE");
+			// 실제 저장된 파일명
+			FILE_STORED_NAME = mr.getFilesystemName("FILE");
 
-		if (FILE_STORED_NAME != null) {
+			if (FILE_STORED_NAME != null) {
 
-			// 원래 파일명
-			FILE_ORIGINAL_NAME = mr.getOriginalFileName("FILE");
+				// 원래 파일명
+				FILE_ORIGINAL_NAME = mr.getOriginalFileName("FILE");
 
-			// 파일 크기
-			FILE_SIZE = String.valueOf(mr.getFile("FILE").length());
+				// 파일 크기
+				FILE_SIZE = String.valueOf(mr.getFile("FILE").length());
 
-			// 파일 타입
-			fileType = mr.getContentType("FILE");
+				// 파일 타입
+				fileType = mr.getContentType("FILE");
 
-			// 파일 확장자
-			fileExtend = FILE_STORED_NAME.substring(FILE_STORED_NAME.lastIndexOf(".") + 1);
-		}
-		// }
+				// 파일 확장자
+				fileExtend = FILE_STORED_NAME.substring(FILE_STORED_NAME.lastIndexOf(".") + 1);
+			}
+		//}
 
 		FilesVO insertFile = new FilesVO();
 
@@ -335,6 +352,7 @@ public class BoardController extends HttpServlet {
 		int BOARD_CODE = Integer.parseInt(request.getParameter("BOARD_CODE"));
 
 		request.setAttribute("boardContents", boardService.selectBoardContents(BOARD_CODE).get("boardsVO"));
+		request.setAttribute("fileContents", boardService.selectFileContents(BOARD_CODE));
 		view = "/Board/updateBoard.jsp";
 	}
 
@@ -349,13 +367,23 @@ public class BoardController extends HttpServlet {
 		} else {
 			System.out.println("[ ERROR ] : BoardController - update() 게시물 수정 오류");
 		}
+	}
 
+	// 게시글 수정 시 업로드된 파일 삭제
+	private void deleteFile() {
+		
+		if (boardService.deleteFile(Integer.parseInt(request.getParameter("FILE_CODE")))) {
+			System.out.println("첨부파일 delete 성공!");
+			view = "/BoardController?action=updateReady&BOARD_CODE=" + request.getParameter("BOARD_CODE");
+		} else {
+			System.out.println("[ ERROR ] : BoardController - deleteFile() 첨부파일 삭제 오류");
+		}
 	}
 
 	private void delete() {
 
 		if (boardService.deleteBoard(Integer.parseInt(request.getParameter("BOARD_CODE")))) {
-			System.out.println("게시물 update 성공!");
+			System.out.println("게시물 delete 성공!");
 		} else {
 			System.out.println("[ ERROR ] : BoardController - delete() 게시물 삭제 오류");
 		}

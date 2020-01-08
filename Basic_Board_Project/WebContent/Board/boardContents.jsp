@@ -103,7 +103,7 @@
 						<tr>
 							<td width="0">&nbsp;</td>
 							<td width="399" height="50">
-							파일  <a href="/Basic_Board_Project/FileController?FILE_CODE=${file.FILE_CODE }">${file.FILE_STORED_NAME }</a>
+							파일  <a href="/Basic_Board_Project/FileController?FILE_CODE=${file.FILE_CODE }">${file.FILE_STORED_NAME }</a>(${file.FILE_SIZE })
 							</td>
 						</tr>
 						<tr height="1" bgcolor="#dddddd">

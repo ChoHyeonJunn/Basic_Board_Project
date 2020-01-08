@@ -8,7 +8,6 @@ import java.util.ArrayList;
 
 import com.DAO.JDBCTemplate;
 import com.VO.FilesVO;
-import com.VO.UsersVO;
 
 public class FileDAOImpl extends JDBCTemplate implements FileDAO {
 
@@ -39,11 +38,6 @@ public class FileDAOImpl extends JDBCTemplate implements FileDAO {
 				file.setFILE_SIZE(rs.getString("FILE_SIZE"));
 				file.setCREATE_DATE(rs.getDate("CREATE_DATE"));
 
-				if (rs.getString("DEL_YN").equals("Y"))
-					file.setDEL_YN(true);
-				else
-					file.setDEL_YN(false);
-
 				filesList.add(file);
 			}
 
@@ -66,7 +60,7 @@ public class FileDAOImpl extends JDBCTemplate implements FileDAO {
 
 		// BOARD_CODE 넣는 부분 확인해야함*****
 		String sql = " INSERT INTO FILES VALUES (SEQ_FILES_FILE_CODE.NEXTVAL,"
-				+ "(SELECT MAX(BOARD_CODE) FROM BOARDS), ?, ?, ?, ?, ?, SYSDATE, 'N') ";
+				+ "(SELECT MAX(BOARD_CODE) FROM BOARDS), ?, ?, ?, ?, ?, SYSDATE) ";
 		PreparedStatement pstmt = null;
 		int res = 0;
 		
@@ -127,6 +121,7 @@ public class FileDAOImpl extends JDBCTemplate implements FileDAO {
 			}
 
 		} catch (SQLException e) {
+			System.out.println("[ ERROR ] : FileDAOImpl - selectFileContents() SQL 확인하세요.");
 			e.printStackTrace();
 		} finally {
 			close(rs);
@@ -167,6 +162,7 @@ public class FileDAOImpl extends JDBCTemplate implements FileDAO {
 			}
 
 		} catch (SQLException e) {
+			System.out.println("[ ERROR ] : FileDAOImpl - selectOneFile() SQL 확인하세요.");
 			e.printStackTrace();
 		} finally {
 			close(rs);
@@ -175,5 +171,33 @@ public class FileDAOImpl extends JDBCTemplate implements FileDAO {
 		}
 
 		return file;
+	}
+
+	
+	// 어떤 게시글의 첨부파일 삭제
+	@Override
+	public int deleteFile(int FILE_CODE) {
+		
+		Connection conn = getConnection();
+		
+		PreparedStatement pstmt = null;
+		String sql = " DELETE FROM FILES WHERE FILE_CODE = " + FILE_CODE;
+		
+		int res = 0;
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			
+			res = pstmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			System.out.println("[ ERROR ] : FileDAOImpl - deleteFile() SQL 확인하세요.");
+			e.printStackTrace();
+		} finally {
+			close(pstmt);
+			close(conn);
+		}
+		
+		return res;
 	}
 }

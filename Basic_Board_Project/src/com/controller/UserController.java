@@ -62,14 +62,17 @@ public class UserController extends HttpServlet {
 		case "insertUserPage":
 			insertUserPage();
 			break;
+
 		// 회원가입
 		case "insert":
 			insertUser();
 			break;
+			
 		// 로그인 페이지 요청
 		case "loginPage":
 			loginPage();
 			break;
+			
 		// 로그인
 		case "login":
 			login();
@@ -96,7 +99,7 @@ public class UserController extends HttpServlet {
 		dispatcher.forward(request, response);
 		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
-
+	
 	// 회원가입 페이지 요청
 	private void insertUserPage() {
 		// 기존 생성되어있는 privateKey가 있다면 session에서 파기!
@@ -114,8 +117,10 @@ public class UserController extends HttpServlet {
 		view = "/User/insertUser.jsp";
 	}
 
+	SHA256_Util shaUtil = new SHA256_Util();
 	// 회원가입
 	private void insertUser() throws IOException {
+		
 		UsersVO user = new UsersVO();
 		PrivateKey privateKey = null;
 
@@ -172,8 +177,8 @@ public class UserController extends HttpServlet {
 
 		view = "/User/login.jsp";
 	}
-
-	// 로그인
+	
+	// 로그인 처리
 	private void login() {
 		UsersVO requestUser = new UsersVO();
 		PrivateKey privateKey = null;
@@ -203,13 +208,15 @@ public class UserController extends HttpServlet {
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
-
+		
 		UsersVO loginUser = userService.loginCheck(requestUser);
 
-		if (loginUser.getStatus() == 1) { // 로그인 성공
+			if (loginUser.getStatus() == 1) { // 로그인 성공
 
 			view = "/BoardController?action=listBoard"; // 다시 BoardController로 액션 보내기!
+			
 			session = request.getSession();
+			
 			session.setAttribute("loginUser", loginUser);
 
 		} else { // 로그인 실패
