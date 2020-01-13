@@ -110,7 +110,7 @@
 		
 		<div align="center">
 			<input type="submit" value="등록" class="btn btn-info" > 
-			<a href="javascript:history.go(-1)" class="btn btn-info">돌아가기</a>
+			<a href="/Basic_Board_Project/BoardController?action=listBoard" class="btn btn-info">돌아가기</a>
 		</div>
 	</form>
 	

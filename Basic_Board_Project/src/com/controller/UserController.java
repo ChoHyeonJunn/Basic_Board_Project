@@ -16,6 +16,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.json.simple.JSONObject;
+
 import com.VO.UsersVO;
 import com.service.user.UserService;
 import com.service.user.UserServiceImpl;
@@ -58,11 +60,22 @@ public class UserController extends HttpServlet {
 		}
 
 		switch (action) {
+		
 		// 회원가입 페이지 요청
 		case "insertUserPage":
 			insertUserPage();
 			break;
 
+		// 아이디 중복체크
+		case "idCheck":
+			idCheck();
+			return;	// java.lang.IllegalStateException: 응답이 이미 커밋된 후에는 forward할 수 없습니다. -> out 객체를 중복사용하지 않도록 return을 해서 컨트롤러를 끝내줘야한다.
+		
+		// 닉네임 중복체크
+		case "nameCheck":
+			nameCheck();
+			return;
+			
 		// 회원가입
 		case "insert":
 			insertUser();
@@ -76,19 +89,23 @@ public class UserController extends HttpServlet {
 		// 로그인
 		case "login":
 			login();
-			break;
+			return;
+			
 		// 로그아웃
 		case "logout":
 			logout();
 			break;
+			
 		// 회원정보 수정 페이지 요청
 		case "edit":
 			viewEdit();
 			break;
+			
 		// 회원정보 수정
 		case "update":
 			update();
 			break;
+			
 		// 회원탈퇴
 		case "delete":
 			delete();
@@ -99,7 +116,7 @@ public class UserController extends HttpServlet {
 		dispatcher.forward(request, response);
 		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
-	
+
 	// 회원가입 페이지 요청
 	private void insertUserPage() {
 		// 기존 생성되어있는 privateKey가 있다면 session에서 파기!
@@ -116,6 +133,40 @@ public class UserController extends HttpServlet {
 
 		view = "/User/insertUser.jsp";
 	}
+	
+	// 아이디 중복체크
+	private void idCheck() {
+		String NEWID = request.getParameter("USERID");
+		int res = userService.idCheck(NEWID);
+		
+		JSONObject json = null;
+		if(NEWID != null && NEWID != "") {
+			json = new JSONObject();
+			
+			json.put("result", res);
+			
+			out.print(json.toString());
+			out.flush();
+			out.close();
+		}
+	}
+	
+	// 닉네임 중복체크
+	private void nameCheck() {
+		String NEWNAME = request.getParameter("NAME");
+		int res = userService.nameCheck(NEWNAME);
+		
+		JSONObject json = null;
+		if(NEWNAME != null && NEWNAME != "") {
+			json = new JSONObject();
+			
+			json.put("result", res);
+			
+			out.print(json.toString());
+			out.flush();
+			out.close();
+		}
+	}
 
 	SHA256_Util shaUtil = new SHA256_Util();
 	// 회원가입
@@ -131,7 +182,6 @@ public class UserController extends HttpServlet {
 			view = "/User/insertUser.jsp";
 		} else {
 			privateKey = (PrivateKey) session.getAttribute("RSAprivateKey");
-			session.removeAttribute("RSAprivateKey");
 		}
 
 		try {
@@ -155,6 +205,8 @@ public class UserController extends HttpServlet {
 
 		if (userService.insertUser(user)) {
 			System.out.println("USERS DB 입력 성공!");
+			session.removeAttribute("RSAprivateKey");
+			
 			view = "/UserController?action=loginPage";
 		} else {
 			throw new IOException("USERS DB 입력 오류");
@@ -187,11 +239,11 @@ public class UserController extends HttpServlet {
 
 		if (session.getAttribute("RSAprivateKey") == null) {
 			System.out.println("session 에 RSAprivateKey가 존재하지 않습니다!!");
-			view = "/User/insertUser.jsp";
+			view = "/UserController?action=loginPage";
 		} else {
 			privateKey = (PrivateKey) session.getAttribute("RSAprivateKey");
-			session.removeAttribute("RSAprivateKey");
 		}
+		
 		try {
 			String USERID = rsaUtil.getDecryptText(privateKey, request.getParameter("USERID"));
 			String PASSWORD = rsaUtil.getDecryptText(privateKey, request.getParameter("PASSWORD"));
@@ -210,34 +262,27 @@ public class UserController extends HttpServlet {
 		}
 		
 		UsersVO loginUser = userService.loginCheck(requestUser);
+		JSONObject json = new JSONObject();
 
-			if (loginUser.getStatus() == 1) { // 로그인 성공
+		if (loginUser.getStatus() == 1) { // 로그인 성공
 
-			view = "/BoardController?action=listBoard"; // 다시 BoardController로 액션 보내기!
-			
 			session = request.getSession();
-			
 			session.setAttribute("loginUser", loginUser);
-
-		} else { // 로그인 실패
-
-			if (loginUser.getStatus() == 0) { // 패스워드 오류
-				msg = "패스워드를 잘못 입력하셨습니다.";
-			} else {
-				msg = "존재하지 않는 아이디입니다.";
-			}
-
-			request.setAttribute("msg", msg);
-
-			view = "/User/loginErrorPage.jsp";
+			session.removeAttribute("RSAprivateKey");
 		}
+
+		json.put("result", loginUser.getStatus());
+			
+		out.print(json.toString());
+		out.flush();
+		out.close();
 	}
 
 	// 로그아웃
 	private void logout() {
 		// 세션 해제!
 		request.getSession().invalidate();
-		view = "/Board/boardList.jsp";
+		view = "/BoardController?action=listBoard";
 	}
 
 	// 회원정보 수정 페이지 요청

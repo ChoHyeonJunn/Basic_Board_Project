@@ -53,6 +53,7 @@ public class FileDAOImpl extends JDBCTemplate implements FileDAO {
 		return filesList;
 	}
 
+	// 새로운 글 생성과 동시에 파일 추가
 	@Override
 	public int insertFile(FilesVO file) {
 		
@@ -181,7 +182,7 @@ public class FileDAOImpl extends JDBCTemplate implements FileDAO {
 		Connection conn = getConnection();
 		
 		PreparedStatement pstmt = null;
-		String sql = " DELETE FROM FILES WHERE FILE_CODE = " + FILE_CODE;
+		String sql = " UPDATE FILES SET FILE_ORIGINAL_NAME = NULL, FILE_STORED_NAME = NULL, FILE_PATH = NULL, FILE_SIZE = NULL WHERE FILE_CODE = " + FILE_CODE;
 		
 		int res = 0;
 		
@@ -190,8 +191,49 @@ public class FileDAOImpl extends JDBCTemplate implements FileDAO {
 			
 			res = pstmt.executeUpdate();
 			
+			if(res > 0) {
+				commit(conn);
+			}
+			
 		} catch (SQLException e) {
 			System.out.println("[ ERROR ] : FileDAOImpl - deleteFile() SQL 확인하세요.");
+			e.printStackTrace();
+		} finally {
+			close(pstmt);
+			close(conn);
+		}
+		
+		return res;
+	}
+
+	// 어떤 게시글의 첨부파일 수정
+	@Override
+	public int updateFile(FilesVO vo) {
+		
+		Connection conn = getConnection();
+		
+		PreparedStatement pstmt = null;
+		String sql = " UPDATE FILES SET FILE_ORIGINAL_NAME = ?, FILE_STORED_NAME = ?, FILE_PATH = ?, FILE_SIZE = ? WHERE FILE_CODE = ? ";
+		
+		int res = 0;
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, vo.getFILE_ORIGINAL_NAME());
+			pstmt.setString(2, vo.getFILE_STORED_NAME());
+			pstmt.setString(3, vo.getFILE_PATH());
+			pstmt.setString(4, vo.getFILE_SIZE());
+			pstmt.setInt(5, vo.getFILE_CODE());
+			
+			res = pstmt.executeUpdate();
+			
+			if(res > 0) {
+				commit(conn);
+			}
+			
+		} catch (SQLException e) {
+			System.out.println("[ ERROR ] : FileDAOImpl - updateFile() SQL 확인하세요.");
 			e.printStackTrace();
 		} finally {
 			close(pstmt);

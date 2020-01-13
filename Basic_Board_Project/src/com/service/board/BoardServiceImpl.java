@@ -148,5 +148,15 @@ public class BoardServiceImpl implements BoardService {
 			return false;
 		}
 	}
+
+	@Override
+	public boolean updateFile(FilesVO file) {
+
+		if(fileDAO.updateFile(file) > 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 	
 }

@@ -1,3 +1,4 @@
+<%@page import="com.VO.FilesVO"%>
 <%@page import="java.io.File"%>
 <%@ page language="java" contentType="text/html; charset=utf-8"
    pageEncoding="utf-8" import="com.VO.UsersVO, com.VO.BoardsVO"%>
@@ -103,7 +104,19 @@
 						<tr>
 							<td width="0">&nbsp;</td>
 							<td width="399" height="50">
-							파일  <a href="/Basic_Board_Project/FileController?FILE_CODE=${file.FILE_CODE }">${file.FILE_STORED_NAME }</a>(${file.FILE_SIZE })
+							<%
+								FilesVO file = (FilesVO) request.getAttribute("fileContents");
+								if(file == null) {
+							%>
+									첨부파일 없음
+							<%
+								} else {
+							%>
+									첨부파일
+									<a href="/Basic_Board_Project/FileController?FILE_CODE=${file.FILE_CODE }">${file.FILE_ORIGINAL_NAME }</a>(${file.FILE_SIZE })
+							<%
+								}
+							%>
 							</td>
 						</tr>
 						<tr height="1" bgcolor="#dddddd">

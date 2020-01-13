@@ -31,6 +31,9 @@ public interface BoardService {
 	
 	// 첨부파일 업로드
 	public boolean insertFile(FilesVO file);
+	
+	// 첨부파일 수정
+	public boolean updateFile(FilesVO file);
 
 	// 게시물 별 댓글 수 
 	public void increaseCountComment(int BOARD_CODE);

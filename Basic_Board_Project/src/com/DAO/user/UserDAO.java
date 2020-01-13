@@ -25,4 +25,10 @@ public interface UserDAO {
 
 	// 한 명의 회원정보 가져오기
 	public UsersVO selectOneUser(int USER_CODE);
+	
+	// 아이디 중복체크
+	public int idCheck(String NEWID);
+	
+	// 닉네임 중복체크
+	public int nameCheck(String NEWNAME);
 }

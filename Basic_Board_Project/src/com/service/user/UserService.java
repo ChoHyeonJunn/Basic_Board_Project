@@ -18,4 +18,10 @@ public interface UserService {
 	
 	// 회원 탈퇴
 	public boolean deleteUser(int USER_CODE);
+	
+	// 아이디 중복체크
+	public int idCheck(String NEWID);
+	
+	// 닉네임 중복체크
+	public int nameCheck(String NEWNAME);
 }

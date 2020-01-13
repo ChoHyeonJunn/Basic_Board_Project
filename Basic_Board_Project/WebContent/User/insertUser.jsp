@@ -21,6 +21,102 @@
 			var rsa = new RSAKey();
 			rsa.setPublic("${modulus}", "${exponent}");
 
+			$("#SUBMIT").attr("disabled", "disabled");
+			
+			$("#USERID").blur(function() {
+			
+				if($("#USERID").val() == null || $("#USERID").val() == "") {
+					$("#id_check").text("필수 정보입니다.");
+					$("#id_check").attr("style", "color:red");
+				}
+				
+				$.ajax({
+					
+					type: "POST",
+					url: "/Basic_Board_Project/UserController?action=idCheck",
+					data: { USERID : $("#USERID").val() },
+					datatype: "JSON",
+					
+					success: function(args) {
+						var res = JSON.parse(args).result;
+						
+						if(res == 1) {
+							$("#id_check").text("이미 사용중인 아이디입니다.");
+							$("#id_check").attr("style", "color:red");
+							
+							$("#SUBMIT").attr("disabled", "disabled");
+						} else {
+							$("#id_check").text("사용 가능한 아이디입니다.");
+							$("#id_check").attr("style", "color:blue");
+							
+							$("#SUBMIT").removeAttr("disabled");
+						}
+					},
+					
+					error : function(request, status, error) {
+						alert("통신 실패");
+						alert("code : " + request.status + "\n" +
+								"message : " + request.responseText + "\n" +
+								"error : " + error);
+					}
+				})
+			})
+			
+			$("#NAME").blur(function() {
+			
+				if($("#NAME").val() == null || $("#NAME").val() == "") {
+					$("#name_check").text("필수 정보입니다.");
+					$("#name_check").attr("style", "color:red");
+				}
+				
+				$.ajax({
+					
+					type: "POST",
+					url: "/Basic_Board_Project/UserController?action=nameCheck",
+					data: { NAME : $("#NAME").val() },
+					datatype: "JSON",
+					
+					success: function(args) {
+						var res = JSON.parse(args).result;
+						
+						if(res == 1) {
+							$("#name_check").text("이미 사용중인 닉네임입니다.");
+							$("#name_check").attr("style", "color:red");
+							
+							$("#SUBMIT").attr("disabled", "disabled");
+						} else {
+							$("#name_check").text("사용 가능한 닉네임입니다.");
+							$("#name_check").attr("style", "color:blue");
+							
+							$("#SUBMIT").removeAttr("disabled");
+						}
+					},
+					
+					error : function(request, status, error) {
+						alert("통신 실패");
+						alert("code : " + request.status + "\n" +
+								"message : " + request.responseText + "\n" +
+								"error : " + error);
+					}
+				})
+			})
+			
+			$("#PW_CONFIRM,#PASSWORD").blur(function() {
+				var PASSWORD = $("#PASSWORD").val();
+				var PW_CONFIRM = $("#PW_CONFIRM").val();
+				
+				if(PASSWORD != "" && PW_CONFIRM != "") {
+					
+					if(PASSWORD != PW_CONFIRM) {
+						$("#pw_check").text("비밀번호가 일치하지 않습니다.");
+						$("#pw_check").attr("style", "color:red");						
+					} else {	
+						$("#pw_check").text("비밀번호가 일치합니다.");
+						$("#pw_check").attr("style", "color:green");
+					}
+				} 
+			})
+
 			$("#insertForm").submit(function(e) {
 				
 				e.preventDefault();
@@ -61,21 +157,28 @@
 			<div class="form-group">
 				<label for="USERID">ID : </label>
 			    <input type="text" class="form-control" id="USERID" name="USERID" placeholder="아이디를 입력해주세요" maxlength="10" autofocus autocomplete="off" required />
-			<div class="check_font" id="id_check"></div>	<!-- 경고문이 들어갈 공간 -->
+				<div class="check_font" id="id_check"></div>	<!-- 경고문이 들어갈 공간 -->
 			</div>
 
 			<div class="form-group">
 				<label for="PASSWORD">PW : </label>
 			    <input type="password" class="form-control" id="PASSWORD" name="PASSWORD" placeholder="비밀번호를 입력해주세요" autocomplete="off" required />
 			</div>
-
+			
 			<div class="form-group">
-				<label for="NAME">NAME : </label>
-				<input type="text" class="form-control" id="NAME" name="NAME" placeholder="이름을 입력해주세요" autocomplete="off" required/>
+				<label for="PASSWORD">PW : </label>
+			    <input type="password" class="form-control" id="PW_CONFIRM" placeholder="비밀번호를 확인해주세요" autocomplete="off" required />
+				<div class="check_font" id="pw_check"></div>
 			</div>
 
-			<button type="submit" class="btn btn-primary">가입</button>
-			<a class="btn btn-dark" href="javascript:history.go(-1)">취소</a><p>
+			<div class="form-group">
+				<label for="NAME">NICKNAME : </label>
+				<input type="text" class="form-control" id="NAME" name="NAME" placeholder="닉네임을 입력해주세요" autocomplete="off" required/>
+				<div class="check_font" id="name_check"></div>
+			</div>
+
+			<button type="submit" class="btn btn-primary" id="SUBMIT">가입</button>
+			<a class="btn btn-dark" href="/Basic_Board_Project/BoardController?action=listBoard">취소</a><p>
 		</form>
 		
 		<!-- 실제 서버로 전송되는 FORM -->

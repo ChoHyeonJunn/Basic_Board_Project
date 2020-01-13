@@ -276,4 +276,69 @@ public class UserDAOImpl extends JDBCTemplate implements UserDAO {
 		return user;
 	}
 
+	// 아이디 중복체크
+	@Override
+	public int idCheck(String NEWID) {
+		
+		Connection conn = getConnection();
+
+		String sql = " SELECT COUNT(*) FROM USERS WHERE USERID = ? ";
+
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		int res = 0;
+
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, NEWID);
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				res = rs.getInt(1);
+			}
+
+		} catch (SQLException e) {
+			System.out.println("[ ERROR ] : UserDAOImpl - idCheck(String NEWID) SQL 확인하세요.");
+			e.printStackTrace();
+		} finally {
+			close(rs);
+			close(pstmt);
+			close(conn);
+		}
+
+		return res;
+	}
+
+	@Override
+	public int nameCheck(String NEWNAME) {
+
+		Connection conn = getConnection();
+
+		String sql = " SELECT COUNT(*) FROM USERS WHERE NAME = ? ";
+
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		int res = 0;
+
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, NEWNAME);
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				res = rs.getInt(1);
+			}
+
+		} catch (SQLException e) {
+			System.out.println("[ ERROR ] : UserDAOImpl - nameCheck(String NEWNAME) SQL 확인하세요.");
+			e.printStackTrace();
+		} finally {
+			close(rs);
+			close(pstmt);
+			close(conn);
+		}
+
+		return res;
+	}
+
 }

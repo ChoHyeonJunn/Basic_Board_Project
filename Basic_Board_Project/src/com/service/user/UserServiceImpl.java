@@ -63,6 +63,7 @@ public class UserServiceImpl implements UserService {
 		return userContents;
 	}
 
+	// 회원정보 수정
 	@Override
 	public boolean updateUser(UsersVO usersVO) {
 		// 비밀번호 암호화
@@ -77,6 +78,7 @@ public class UserServiceImpl implements UserService {
 		}
 	}
 
+	// 회원 탈퇴
 	@Override
 	public boolean deleteUser(int USER_CODE) {
 
@@ -85,5 +87,19 @@ public class UserServiceImpl implements UserService {
 		} else {
 			return false;
 		}
+	}
+
+	// 아이디 중복체크
+	@Override
+	public int idCheck(String NEWID) {
+
+		return userDAO.idCheck(NEWID);
+	}
+
+	// 닉네임 중복체크
+	@Override
+	public int nameCheck(String NEWNAME) {
+
+		return userDAO.nameCheck(NEWNAME);
 	}
 }
