@@ -98,6 +98,11 @@ public class BoardController extends HttpServlet {
 			boardContents();
 			break;
 
+		case "insertSubComment":
+			insertSubComment();
+			boardContents();
+			break;
+
 		case "updateComment":
 			updateComment();
 			boardContents();
@@ -105,8 +110,7 @@ public class BoardController extends HttpServlet {
 
 		case "deleteComment":
 			deleteComment();
-			boardContents();
-			break;
+			return;
 
 		case "statusComment":
 			statusComment();
@@ -129,8 +133,16 @@ public class BoardController extends HttpServlet {
 	}
 
 	private void deleteComment() {
-		commentService.deleteComment(Integer.parseInt(request.getParameter("COMMENT_CODE")));
-		boardService.decreaseCountComment(Integer.parseInt(request.getParameter("BOARD_CODE")));
+		int BOARD_CODE = Integer.parseInt(request.getParameter("BOARD_CODE"));
+		if (commentService.deleteComment(Integer.parseInt(request.getParameter("COMMENT_CODE")),
+				Integer.parseInt(request.getParameter("COMMENT_CODE")),
+				Integer.parseInt(request.getParameter("GROUP_NO")))) {
+			out.println("<script>alert('댓글 삭제 완료!');</script>");
+			out.println("<script>location.href='/BoardController?action=boardContents&BOARD_CODE=" + BOARD_CODE
+					+ "';</script>");
+			out.close();
+		}
+		boardService.decreaseCountComment(BOARD_CODE);
 	}
 
 	private void updateComment() {
@@ -157,6 +169,25 @@ public class BoardController extends HttpServlet {
 		commentService.insertComment(comment);
 		boardService.increaseCountComment(Integer.parseInt(request.getParameter("BOARD_CODE")));
 
+	}
+
+	private void insertSubComment() {
+		if (request.getParameter("CONTEXT") == "")
+			return;
+		CommentsVO parentComment = new CommentsVO();
+		CommentsVO subComment = new CommentsVO();
+
+		parentComment.setBOARD_CODE(Integer.parseInt(request.getParameter("BOARD_CODE")));
+		parentComment.setGROUP_NO(Integer.parseInt(request.getParameter("GROUP_NO")));
+		parentComment.setGROUP_ORDER(Integer.parseInt(request.getParameter("GROUP_ORDER")));
+		parentComment.setGROUP_DEPTH(Integer.parseInt(request.getParameter("GROUP_DEPTH")));
+
+
+		subComment.setUSER_CODE(Integer.parseInt(request.getParameter("USER_CODE")));
+		subComment.setCONTEXT(request.getParameter("CONTEXT"));
+		
+		commentService.insertComment(parentComment, subComment);
+		boardService.increaseCountComment(Integer.parseInt(request.getParameter("BOARD_CODE")));
 	}
 
 	// 게시글 리스트
@@ -396,10 +427,10 @@ public class BoardController extends HttpServlet {
 			System.out.println("[ ERROR ] : BoardController - MultipartRequest 객체 생성 오류");
 			e1.printStackTrace();
 		}
-		
+
 		// 게시글 수정
 		BoardsVO updateBoard = new BoardsVO();
-		
+
 		updateBoard.setTITLE(request.getParameter("TITLE"));
 		updateBoard.setCONTEXT(request.getParameter("CONTEXT"));
 		updateBoard.setBOARD_CODE(Integer.parseInt(request.getParameter("BOARD_CODE")));
@@ -409,7 +440,7 @@ public class BoardController extends HttpServlet {
 		} else {
 			System.out.println("[ ERROR ] : BoardController - update() 게시물 수정 오류");
 		}
-		
+
 		// 파일 첨부
 		// Enumeration<?> files = mr.getFileNames(); // 다중파일일 경우
 
@@ -461,7 +492,7 @@ public class BoardController extends HttpServlet {
 	private void deleteFile() {
 		int FILE_CODE = Integer.parseInt(request.getParameter("FILE_CODE"));
 		int BOARD_CODE = Integer.parseInt(request.getParameter("BOARD_CODE"));
-		
+
 		String FILE_STORED_NAME = boardService.selectFileContents(BOARD_CODE).getFILE_STORED_NAME();
 		System.out.println("deleteFile()의 FILE_STORED_NAME : " + FILE_STORED_NAME);
 
@@ -471,10 +502,10 @@ public class BoardController extends HttpServlet {
 			// 서버경로에서 물리적으로 파일 삭제
 			String filePath = "/File/Upload/";
 			String FILE_PATH = request.getSession().getServletContext().getRealPath(filePath) + FILE_STORED_NAME;
-			
+
 			File file = new File(FILE_PATH);
 			System.out.println("삭제할 file : " + file);
-			
+
 			if (file.exists()) {
 				if (file.delete()) {
 					System.out.println("서버에서 물리적으로 파일삭제 성공!");

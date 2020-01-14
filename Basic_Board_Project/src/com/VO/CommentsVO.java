@@ -14,22 +14,21 @@ public class CommentsVO {
 	private Date CREATE_DATE;
 	private Date UPDATE_DATE;
 
+	private int GROUP_NO;
+	private int GROUP_ORDER;
+	private int GROUP_DEPTH;
 	private boolean DEL_YN;
-	private String NAME;
 
-	@Override
-	public String toString() {
-		return "CommentsVO [COMMENT_CODE=" + COMMENT_CODE + ", BOARD_CODE=" + BOARD_CODE + ", USER_CODE=" + USER_CODE
-				+ ", CONTEXT=" + CONTEXT + ", COUNT_GOOD=" + COUNT_GOOD + ", COUNT_BAD=" + COUNT_BAD + ", CREATE_DATE="
-				+ CREATE_DATE + ", UPDATE_DATE=" + UPDATE_DATE + ", DEL_YN=" + DEL_YN + ", NAME=" + NAME + "]";
-	}
+	private String NAME;
 
 	public CommentsVO() {
 		super();
+		// TODO Auto-generated constructor stub
 	}
 
 	public CommentsVO(int cOMMENT_CODE, int bOARD_CODE, int uSER_CODE, String cONTEXT, int cOUNT_GOOD, int cOUNT_BAD,
-			Date cREATE_DATE, Date uPDATE_DATE, boolean dEL_YN) {
+			Date cREATE_DATE, Date uPDATE_DATE, int gROUP_NO, int gROUP_ORDER, int gROUP_DEPTH, boolean dEL_YN,
+			String nAME) {
 		super();
 		COMMENT_CODE = cOMMENT_CODE;
 		BOARD_CODE = bOARD_CODE;
@@ -39,7 +38,19 @@ public class CommentsVO {
 		COUNT_BAD = cOUNT_BAD;
 		CREATE_DATE = cREATE_DATE;
 		UPDATE_DATE = uPDATE_DATE;
+		GROUP_NO = gROUP_NO;
+		GROUP_ORDER = gROUP_ORDER;
+		GROUP_DEPTH = gROUP_DEPTH;
 		DEL_YN = dEL_YN;
+		NAME = nAME;
+	}
+
+	public int getCOMMENT_CODE() {
+		return COMMENT_CODE;
+	}
+
+	public void setCOMMENT_CODE(int cOMMENT_CODE) {
+		COMMENT_CODE = cOMMENT_CODE;
 	}
 
 	public int getBOARD_CODE() {
@@ -90,20 +101,36 @@ public class CommentsVO {
 		CREATE_DATE = cREATE_DATE;
 	}
 
-	public int getCOMMENT_CODE() {
-		return COMMENT_CODE;
-	}
-
-	public void setCOMMENT_CODE(int cOMMENT_CODE) {
-		COMMENT_CODE = cOMMENT_CODE;
-	}
-
 	public Date getUPDATE_DATE() {
 		return UPDATE_DATE;
 	}
 
 	public void setUPDATE_DATE(Date uPDATE_DATE) {
 		UPDATE_DATE = uPDATE_DATE;
+	}
+
+	public int getGROUP_NO() {
+		return GROUP_NO;
+	}
+
+	public void setGROUP_NO(int gROUP_NO) {
+		GROUP_NO = gROUP_NO;
+	}
+
+	public int getGROUP_ORDER() {
+		return GROUP_ORDER;
+	}
+
+	public void setGROUP_ORDER(int gROUP_ORDER) {
+		GROUP_ORDER = gROUP_ORDER;
+	}
+
+	public int getGROUP_DEPTH() {
+		return GROUP_DEPTH;
+	}
+
+	public void setGROUP_DEPTH(int gROUP_DEPTH) {
+		GROUP_DEPTH = gROUP_DEPTH;
 	}
 
 	public boolean isDEL_YN() {
@@ -120,6 +147,14 @@ public class CommentsVO {
 
 	public void setNAME(String nAME) {
 		NAME = nAME;
+	}
+
+	@Override
+	public String toString() {
+		return "CommentsVO [COMMENT_CODE=" + COMMENT_CODE + ", BOARD_CODE=" + BOARD_CODE + ", USER_CODE=" + USER_CODE
+				+ ", CONTEXT=" + CONTEXT + ", COUNT_GOOD=" + COUNT_GOOD + ", COUNT_BAD=" + COUNT_BAD + ", CREATE_DATE="
+				+ CREATE_DATE + ", UPDATE_DATE=" + UPDATE_DATE + ", GROUP_NO=" + GROUP_NO + ", GROUP_ORDER="
+				+ GROUP_ORDER + ", GROUP_DEPTH=" + GROUP_DEPTH + ", DEL_YN=" + DEL_YN + ", NAME=" + NAME + "]";
 	}
 
 }

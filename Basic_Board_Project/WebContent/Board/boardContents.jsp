@@ -21,7 +21,9 @@
 <head>
 <meta charset="EUC-KR">
 <title>글 내용</title>
+<style type="text/css">
 
+</style>
 <script type="text/javascript">
    function change(COMMENT_CODE, BOARD_CODE, content) {
       var delUpdateButton = document.getElementById("UpdateButton"+COMMENT_CODE);
@@ -44,6 +46,16 @@
       addForm.innerHTML = str;
       updateForm.appendChild(addForm);
    }
+   
+   function createSubComment(COMMENT_CODE){
+	   var subCommentForm = document.getElementById("subCommemtForm"+COMMENT_CODE);
+	   subCommentForm.setAttribute("style","display; padding-left: 50px;");
+   }
+   
+   function cancelSubComment(COMMENT_CODE){
+	   var subCommentForm = document.getElementById("subCommemtForm"+COMMENT_CODE);
+	   subCommentForm.setAttribute("style","display: none;");
+	}
 </script>
 
 </head>
@@ -154,11 +166,6 @@
             <!-- 댓글 수정, 삭제를 위한 파라미터 -->
             <input type="hidden" name="BOARD_CODE" value="${board.BOARD_CODE }">
             <input type="hidden" name="USER_CODE" value="<%=USER_CODE%>">
-            <input type="hidden" name="opt" value="1">
-            <!-- ref : 메인글의 idx 컬럼 값 -->
-            <input type="hidden" name="page" value="1"> 
-            <input type="hidden" name="ref" value="1">
-
             <textarea cols="120" rows="3" name="CONTEXT" placeholder="여러분의 소중한 댓글을 입력해주세요."></textarea>
             &nbsp; 
             <input type="submit" value="댓글달기" class="btn btn-dark">
@@ -170,8 +177,17 @@
 
          <!-- 댓글 리스트 -->
          <c:forEach var="co" items="${commentsList}">
-            <div class="container mx-auto m-2 p-2 bg-ligth shadow">
-            
+         	<c:if test="${co.GROUP_DEPTH > 0 }">
+         	
+         	<script type="text/javascript">
+         		window.onload = function(){
+         			var COMMENT_CODE = ${co.COMMENT_CODE}
+         			var commentForm = document.getElementById("commentForm"+COMMENT_CODE);
+         			commentForm.setAttribute("style","padding-left: 50px;")
+         		}
+         	</script>
+         	</c:if>
+         	<div class="container mx-auto m-2 p-2 bg-ligth shadow" id="commentForm${co.COMMENT_CODE}">   
                <span class="name">${co.NAME }</span> 
                <span class="date">${co.CREATE_DATE}</span>
 
@@ -181,14 +197,36 @@
 
 
                   <a href="javascript:change(${co.COMMENT_CODE},${co.BOARD_CODE},'${content }')" id="UpdateButton${co.COMMENT_CODE}">수정</a> &nbsp;
-                  <a href="/Basic_Board_Project/BoardController?action=deleteComment&BOARD_CODE=${board.BOARD_CODE}&COMMENT_CODE=${co.COMMENT_CODE}">삭제</a>
+                  <a href="/Basic_Board_Project/BoardController?action=deleteComment&BOARD_CODE=${board.BOARD_CODE}&COMMENT_CODE=${co.COMMENT_CODE}&GROUP_DEPTH=${co.GROUP_DEPTH}&GROUP_NO=${co.GROUP_NO}">삭제</a>
                </c:if>
                <div id = "Content${co.COMMENT_CODE}">${content}</div>
                <div id = "updateForm${co.COMMENT_CODE}"></div>
                
-               <c:if test="${co.USER_CODE eq user_code || user_code eq 0}">
-                  <div>좋아요 ${co.COUNT_GOOD } &nbsp; 싫어요 ${co.COUNT_BAD }</div>
-               </c:if>
+               <div>
+	               <c:if test="${co.USER_CODE eq user_code || user_code eq 0}">
+	                  	좋아요 ${co.COUNT_GOOD } &nbsp; 싫어요 ${co.COUNT_BAD } &nbsp;
+	               </c:if>
+	               <input type="button" onclick="createSubComment(${co.COMMENT_CODE});" value="답글">
+               </div>
+               
+               <!-- 대댓글 달기 -->
+               <div id = "subCommemtForm${co.COMMENT_CODE}" style="padding-left: 50px; display: none;">
+			         <form action="/Basic_Board_Project/BoardController?action=insertSubComment" method="post">
+					   	<input type="hidden" name="BOARD_CODE" value="${board.BOARD_CODE }">
+			       		<input type="hidden" name="USER_CODE" value="<%=USER_CODE%>">
+					   	<input type="hidden" name="GROUP_NO" value="${co.GROUP_NO }">
+					   	<input type="hidden" name="GROUP_ORDER" value="${co.GROUP_ORDER }">
+					   	<input type="hidden" name="GROUP_DEPTH" value="${co.GROUP_DEPTH }">
+			
+			       		<textarea cols="120" rows="3" name="CONTEXT" placeholder="여러분의 소중한 댓글을 입력해주세요."></textarea>
+			      		 &nbsp;
+			      		<div style="margin-left:700px;">
+				      		<input type="button" value="취소" onclick="cancelSubComment(${co.COMMENT_CODE});" class="btn btn-dark" style="margin-right: 10px;">
+				       		<input type="submit" value="댓글달기" class="btn btn-dark">
+			   			</div>
+       				</form>              
+               </div>
+               
                <c:if test="${user_code ne 0 && co.USER_CODE ne user_code}">
                   <div>                     
                      <a href="/Basic_Board_Project/BoardController?action=statusComment&BOARD_CODE=${board.BOARD_CODE}&COMMENT_CODE=${co.COMMENT_CODE}&status=good">좋아요 ${co.COUNT_GOOD }</a>
