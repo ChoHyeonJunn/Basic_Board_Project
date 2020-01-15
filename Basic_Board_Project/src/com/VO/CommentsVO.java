@@ -17,7 +17,6 @@ public class CommentsVO {
 	private int GROUP_NO;
 	private int GROUP_ORDER;
 	private int GROUP_DEPTH;
-	private boolean DEL_YN;
 
 	private String NAME;
 
@@ -27,8 +26,7 @@ public class CommentsVO {
 	}
 
 	public CommentsVO(int cOMMENT_CODE, int bOARD_CODE, int uSER_CODE, String cONTEXT, int cOUNT_GOOD, int cOUNT_BAD,
-			Date cREATE_DATE, Date uPDATE_DATE, int gROUP_NO, int gROUP_ORDER, int gROUP_DEPTH, boolean dEL_YN,
-			String nAME) {
+			Date cREATE_DATE, Date uPDATE_DATE, int gROUP_NO, int gROUP_ORDER, int gROUP_DEPTH,	String nAME) {
 		super();
 		COMMENT_CODE = cOMMENT_CODE;
 		BOARD_CODE = bOARD_CODE;
@@ -41,7 +39,6 @@ public class CommentsVO {
 		GROUP_NO = gROUP_NO;
 		GROUP_ORDER = gROUP_ORDER;
 		GROUP_DEPTH = gROUP_DEPTH;
-		DEL_YN = dEL_YN;
 		NAME = nAME;
 	}
 
@@ -133,14 +130,6 @@ public class CommentsVO {
 		GROUP_DEPTH = gROUP_DEPTH;
 	}
 
-	public boolean isDEL_YN() {
-		return DEL_YN;
-	}
-
-	public void setDEL_YN(boolean dEL_YN) {
-		DEL_YN = dEL_YN;
-	}
-
 	public String getNAME() {
 		return NAME;
 	}
@@ -154,7 +143,7 @@ public class CommentsVO {
 		return "CommentsVO [COMMENT_CODE=" + COMMENT_CODE + ", BOARD_CODE=" + BOARD_CODE + ", USER_CODE=" + USER_CODE
 				+ ", CONTEXT=" + CONTEXT + ", COUNT_GOOD=" + COUNT_GOOD + ", COUNT_BAD=" + COUNT_BAD + ", CREATE_DATE="
 				+ CREATE_DATE + ", UPDATE_DATE=" + UPDATE_DATE + ", GROUP_NO=" + GROUP_NO + ", GROUP_ORDER="
-				+ GROUP_ORDER + ", GROUP_DEPTH=" + GROUP_DEPTH + ", DEL_YN=" + DEL_YN + ", NAME=" + NAME + "]";
+				+ GROUP_ORDER + ", GROUP_DEPTH=" + GROUP_DEPTH + ", NAME=" + NAME + "]";
 	}
 
 }
