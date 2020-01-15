@@ -97,6 +97,11 @@ public class BoardController extends HttpServlet {
 			insertComment();
 			boardContents();
 			break;
+			
+		case "insertSubComment":
+			insertSubComment();
+			boardContents();
+			break;
 
 		case "updateComment":
 			updateComment();
@@ -105,8 +110,7 @@ public class BoardController extends HttpServlet {
 
 		case "deleteComment":
 			deleteComment();
-			boardContents();
-			break;
+			return;
 
 		case "statusComment":
 			statusComment();
@@ -129,8 +133,17 @@ public class BoardController extends HttpServlet {
 	}
 
 	private void deleteComment() {
-		commentService.deleteComment(Integer.parseInt(request.getParameter("COMMENT_CODE")));
-		boardService.decreaseCountComment(Integer.parseInt(request.getParameter("BOARD_CODE")));
+		int BOARD_CODE = Integer.parseInt(request.getParameter("BOARD_CODE"));
+		
+		if(commentService.deleteComment(Integer.parseInt(request.getParameter("COMMENT_CODE")),
+				Integer.parseInt(request.getParameter("GROUP_DEPTH")),
+				Integer.parseInt(request.getParameter("GROUP_NO")))) {
+			out.println("<script>alert('댓글 삭제 완료!');</script>");
+			out.println("<script>location.href='BoardController?action=boardContents&BOARD_CODE=" + BOARD_CODE + "';</script>");
+			out.close();
+		}
+		
+		boardService.decreaseCountComment(BOARD_CODE);
 	}
 
 	private void updateComment() {
@@ -156,7 +169,22 @@ public class BoardController extends HttpServlet {
 
 		commentService.insertComment(comment);
 		boardService.increaseCountComment(Integer.parseInt(request.getParameter("BOARD_CODE")));
+	}
+	
+	private void insertSubComment() {
+		CommentsVO parentComment = new CommentsVO();
+		CommentsVO subComment = new CommentsVO();
 
+		parentComment.setBOARD_CODE(Integer.parseInt(request.getParameter("BOARD_CODE")));
+		parentComment.setGROUP_NO(Integer.parseInt(request.getParameter("GROUP_NO")));
+		parentComment.setGROUP_ORDER(Integer.parseInt(request.getParameter("GROUP_ORDER")));
+		parentComment.setGROUP_DEPTH(Integer.parseInt(request.getParameter("GROUP_DEPTH")));
+		
+		subComment.setUSER_CODE(Integer.parseInt(request.getParameter("USER_CODE")));
+		subComment.setCONTEXT(request.getParameter("CONTEXT"));
+
+		commentService.insertComment(parentComment, subComment);
+		boardService.increaseCountComment(Integer.parseInt(request.getParameter("BOARD_CODE")));
 	}
 
 	// 게시글 리스트
