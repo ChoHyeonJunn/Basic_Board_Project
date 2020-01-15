@@ -21,9 +21,8 @@
 <head>
 <meta charset="EUC-KR">
 <title>글 내용</title>
-<style type="text/css">
 
-</style>
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script type="text/javascript">
    function change(COMMENT_CODE, BOARD_CODE, content) {
       var delUpdateButton = document.getElementById("UpdateButton"+COMMENT_CODE);
@@ -56,6 +55,22 @@
 	   var subCommentForm = document.getElementById("subCommemtForm"+COMMENT_CODE);
 	   subCommentForm.setAttribute("style","display: none;");
 	}
+
+   $(function(){
+		//$("#commentForm").children("div").css("margin-left","50px");
+		$("#commentForm").children("div").each(function(){
+			if($(this).prop("id") > 0){
+				$(this).css("margin-left","50px");
+			}
+			var name = $(this).find("span[class=name]").eq(0).text();
+			$(this).find("textarea").text("@" + name + " ");
+				
+		});
+		
+
+
+	})
+	
 </script>
 
 </head>
@@ -64,6 +79,7 @@
    <c:set var="board" value="${boardContents}" />
    <c:set var="file" value="${fileContents}" />
    <div class="container mx-auto m-5 p-5 bg-ligth shadow">
+		
 		<table style="width: 100%; cellpadding: 0; cellspacing: 0; border: 0;">
 			<tr>
 				<td>
@@ -153,9 +169,6 @@
 		</table>
 
 
-
-
-
 		<!-- Reply Form {s} -->
       <div class="container mx-auto m-4 p-4 bg-ligth shadow">
          <%
@@ -174,31 +187,24 @@
             }
          %>
 
-
-         <!-- 댓글 리스트 -->
+		<!-- 댓글 리스트 -->
+			
+		 <div id="commentForm">
          <c:forEach var="co" items="${commentsList}">
-         	<c:if test="${co.GROUP_DEPTH > 0 }">
-         	
-         	<script type="text/javascript">
-         		window.onload = function(){
-         			var COMMENT_CODE = ${co.COMMENT_CODE}
-         			var commentForm = document.getElementById("commentForm"+COMMENT_CODE);
-         			commentForm.setAttribute("style","padding-left: 50px;")
-         		}
-         	</script>
-         	</c:if>
-         	<div class="container mx-auto m-2 p-2 bg-ligth shadow" id="commentForm${co.COMMENT_CODE}">   
+
+         	<!--  class="container mx-auto m-2 p-2 bg-ligth shadow" -->
+         	<div id="${co.GROUP_DEPTH}" style="margin: 10px;">   
                <span class="name">${co.NAME }</span> 
                <span class="date">${co.CREATE_DATE}</span>
 
                <c:set var="content" value="${co.CONTEXT }" />
                <c:set var="user_code" value="<%=USER_CODE %>"/>
+               
                <c:if test="${co.USER_CODE eq user_code}">
-
-
                   <a href="javascript:change(${co.COMMENT_CODE},${co.BOARD_CODE},'${content }')" id="UpdateButton${co.COMMENT_CODE}">수정</a> &nbsp;
                   <a href="/Basic_Board_Project/BoardController?action=deleteComment&BOARD_CODE=${board.BOARD_CODE}&COMMENT_CODE=${co.COMMENT_CODE}&GROUP_DEPTH=${co.GROUP_DEPTH}&GROUP_NO=${co.GROUP_NO}">삭제</a>
                </c:if>
+               
                <div id = "Content${co.COMMENT_CODE}">${content}</div>
                <div id = "updateForm${co.COMMENT_CODE}"></div>
                
@@ -206,7 +212,9 @@
 	               <c:if test="${co.USER_CODE eq user_code || user_code eq 0}">
 	                  	좋아요 ${co.COUNT_GOOD } &nbsp; 싫어요 ${co.COUNT_BAD } &nbsp;
 	               </c:if>
-	               <input type="button" onclick="createSubComment(${co.COMMENT_CODE});" value="답글">
+	               <c:if test="${user_code ne null && user_code ne ''}">
+	               		<input type="button" onclick="createSubComment(${co.COMMENT_CODE}); subName();" value="답글">
+	               </c:if>
                </div>
                
                <!-- 대댓글 달기 -->
@@ -235,13 +243,14 @@
                   </div>
                </c:if>
             </div>
-         </c:forEach>
+         </c:forEach>         
+         </div>
          
       </div>
       
    </div>
-
-
+	
+	
 
 </body>
 </html>
