@@ -10,13 +10,13 @@ public interface CommentService {
 
 	// 게시글 별 댓글 리스트
 	public ArrayList<CommentsVO> selectComments(int BOARD_CODE);
-
+	
 	// 원 댓글 달기
 	public int insertComment(CommentsVO comment);
-
-	// 웟 댓글의 대댓글 달기
+		
+	// 원 댓글의 대댓글 달기
 	public int insertComment(CommentsVO parentComment, CommentsVO subComment);
-
+	
 	// 댓글 수정
 	public int updateComment(CommentsVO comment);
 

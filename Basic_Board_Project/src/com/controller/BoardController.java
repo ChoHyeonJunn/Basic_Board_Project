@@ -134,6 +134,7 @@ public class BoardController extends HttpServlet {
 
 	private void deleteComment() {
 		int BOARD_CODE = Integer.parseInt(request.getParameter("BOARD_CODE"));
+
 		if (commentService.deleteComment(Integer.parseInt(request.getParameter("COMMENT_CODE")),
 				Integer.parseInt(request.getParameter("COMMENT_CODE")),
 				Integer.parseInt(request.getParameter("GROUP_NO")))) {
@@ -142,6 +143,7 @@ public class BoardController extends HttpServlet {
 					+ "';</script>");
 			out.close();
 		}
+
 		boardService.decreaseCountComment(BOARD_CODE);
 	}
 
@@ -168,12 +170,9 @@ public class BoardController extends HttpServlet {
 
 		commentService.insertComment(comment);
 		boardService.increaseCountComment(Integer.parseInt(request.getParameter("BOARD_CODE")));
-
 	}
 
 	private void insertSubComment() {
-		if (request.getParameter("CONTEXT") == "")
-			return;
 		CommentsVO parentComment = new CommentsVO();
 		CommentsVO subComment = new CommentsVO();
 
@@ -182,10 +181,9 @@ public class BoardController extends HttpServlet {
 		parentComment.setGROUP_ORDER(Integer.parseInt(request.getParameter("GROUP_ORDER")));
 		parentComment.setGROUP_DEPTH(Integer.parseInt(request.getParameter("GROUP_DEPTH")));
 
-
 		subComment.setUSER_CODE(Integer.parseInt(request.getParameter("USER_CODE")));
 		subComment.setCONTEXT(request.getParameter("CONTEXT"));
-		
+
 		commentService.insertComment(parentComment, subComment);
 		boardService.increaseCountComment(Integer.parseInt(request.getParameter("BOARD_CODE")));
 	}

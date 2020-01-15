@@ -33,7 +33,6 @@ public class CommentServiceImpl implements CommentService {
 
 	@Override
 	public int insertComment(CommentsVO parentComment, CommentsVO subComment) {
-		// TODO Auto-generated method stub
 		return commentDAO.insertComment(parentComment, subComment);
 	}
 
@@ -44,6 +43,7 @@ public class CommentServiceImpl implements CommentService {
 
 	@Override
 	public boolean deleteComment(int COMMENT_CODE, int GROUP_DEPTH, int GROUP_NO) {
+
 		// 댓글(대댓글) 삭제 적합성 판단 (내 DEPTH와 내가 속한 GROUP의 MAX(DEPTH)가 같다면 삭제 가능)
 		if (commentDAO.maxDepth(GROUP_NO) == GROUP_DEPTH) {
 			commentDAO.deleteComment(COMMENT_CODE);
@@ -62,5 +62,4 @@ public class CommentServiceImpl implements CommentService {
 	public int badComment(int COMMENT_CODE) {
 		return commentDAO.badComment(COMMENT_CODE);
 	}
-
 }

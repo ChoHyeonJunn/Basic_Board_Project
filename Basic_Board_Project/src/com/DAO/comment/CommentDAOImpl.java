@@ -36,6 +36,10 @@ public class CommentDAOImpl extends JDBCTemplate implements CommentDAO {
 				comment.setCOUNT_BAD(rs.getInt("COUNT_BAD"));
 				comment.setCREATE_DATE(rs.getDate("CREATE_DATE"));
 				comment.setUPDATE_DATE(rs.getDate("UPDATE_DATE"));
+				
+				comment.setGROUP_NO(rs.getInt("GROUP_NO"));
+				comment.setGROUP_ORDER(rs.getInt("GROUP_ORDER"));
+				comment.setGROUP_DEPTH(rs.getInt("GROUP_DEPTH"));
 
 				comment.setGROUP_NO(rs.getInt("GROUP_NO"));
 				comment.setGROUP_ORDER(rs.getInt("GROUP_ORDER"));
@@ -82,12 +86,17 @@ public class CommentDAOImpl extends JDBCTemplate implements CommentDAO {
 				comment.setCOUNT_BAD(rs.getInt("COUNT_BAD"));
 				comment.setCREATE_DATE(rs.getDate("CREATE_DATE"));
 				comment.setUPDATE_DATE(rs.getDate("UPDATE_DATE"));
+				
+				comment.setGROUP_NO(rs.getInt("GROUP_NO"));
+				comment.setGROUP_ORDER(rs.getInt("GROUP_ORDER"));
+				comment.setGROUP_DEPTH(rs.getInt("GROUP_DEPTH"));
 
 				comment.setGROUP_NO(rs.getInt("GROUP_NO"));
 				comment.setGROUP_ORDER(rs.getInt("GROUP_ORDER"));
 				comment.setGROUP_DEPTH(rs.getInt("GROUP_DEPTH"));
 
 				comment.setNAME(rs.getString("NAME"));
+				
 				commentsList.add(comment);
 			}
 
@@ -110,7 +119,6 @@ public class CommentDAOImpl extends JDBCTemplate implements CommentDAO {
 		Connection con = getConnection();
 		PreparedStatement pstmt = null;
 		int res = 0;
-
 		String sql = " INSERT INTO COMMENTS(COMMENT_CODE, BOARD_CODE, USER_CODE, GROUP_NO, CONTEXT) "
 				+ " VALUES(SEQ_COMMENTS_COMMENT_CODE.NEXTVAL, ?, ?, SEQ_COMMENTS_COMMENT_CODE.CURRVAL, ?)";
 
@@ -134,7 +142,7 @@ public class CommentDAOImpl extends JDBCTemplate implements CommentDAO {
 
 		return res;
 	}
-
+	
 	// 원 댓글의 대댓글 작성
 	@Override
 	public int insertComment(CommentsVO parentComment, CommentsVO subComment) {
@@ -143,8 +151,8 @@ public class CommentDAOImpl extends JDBCTemplate implements CommentDAO {
 		PreparedStatement pstmt = null;
 		int res = 0;
 
-		String sql = " INSERT INTO COMMENTS(COMMENT_CODE, BOARD_CODE, USER_CODE, GROUP_NO, GROUP_ORDER, GROUP_DEPTH, CONTEXT) "
-				+ " VALUES(SEQ_COMMENTS_COMMENT_CODE.NEXTVAL, ?, ?, ?, ?, ?, ?) ";
+		String sql = " INSERT INTO COMMENTS(COMMENT_CODE, BOARD_CODE, USER_CODE, GROUP_NO, GROUP_ORDER, GROUP_DEPTH, CONTEXT) " + 
+				" VALUES(SEQ_COMMENTS_COMMENT_CODE.NEXTVAL, ?, ?, ?, ?, ?, ?)";
 
 		try {
 			pstmt = con.prepareStatement(sql);
@@ -153,12 +161,13 @@ public class CommentDAOImpl extends JDBCTemplate implements CommentDAO {
 			pstmt.setInt(2, subComment.getUSER_CODE());
 			pstmt.setInt(3, parentComment.getGROUP_NO());
 			pstmt.setInt(4, parentComment.getGROUP_ORDER() + 1);
-			pstmt.setInt(5, parentComment.getGROUP_DEPTH() + 1);
+			pstmt.setInt(5, parentComment.getGROUP_DEPTH() + 1);			
 			pstmt.setString(6, subComment.getCONTEXT());
+			
 
 			res = pstmt.executeUpdate();
 			if (res > 0)
-				commit(con);
+				commit(con);			
 		} catch (SQLException e) {
 			System.out.println("[ ERROR ] : CommentDAOImpl - insertComment() SQL 확인하세요.");
 			e.printStackTrace();
@@ -203,7 +212,6 @@ public class CommentDAOImpl extends JDBCTemplate implements CommentDAO {
 		Connection conn = getConnection();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		
 		int res = 0;
 
 		String sql = " SELECT MAX(GROUP_DEPTH) FROM COMMENTS WHERE GROUP_NO = ? ";
@@ -212,7 +220,7 @@ public class CommentDAOImpl extends JDBCTemplate implements CommentDAO {
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, GROUP_NO);
 			rs = pstmt.executeQuery();
-			
+
 			while (rs.next()) {
 				res = rs.getInt("MAX(GROUP_DEPTH)");
 			}
@@ -225,6 +233,7 @@ public class CommentDAOImpl extends JDBCTemplate implements CommentDAO {
 			close(pstmt);
 			close(conn);
 		}
+		
 		return res;
 	}
 
@@ -306,5 +315,6 @@ public class CommentDAOImpl extends JDBCTemplate implements CommentDAO {
 
 		return res;
 	}
+
 
 }
