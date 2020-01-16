@@ -67,10 +67,58 @@
             
       });
       
+      $("#commentSubmit").submit(function(e){
+          e.preventDefault();
+          
+          var BOARD_CODE = $(this).find("input[name='BOARD_CODE']").val();
+          var USER_CODE = $(this).find("input[name='USER_CODE']").val();
+          var CONTEXT = $(this).find("textarea[name='CONTEXT']").val();
+          
+          alert(BOARD_CODE +" : "+USER_CODE+" : "+ CONTEXT)
+          
+          $.ajax({				
+				type: "POST",
+				url: "/Basic_Board_Project/BoardController?action=insertComment",
+				data: {
+					BOARD_CODE : BOARD_CODE,
+					USER_CODE : USER_CODE,
+					CONTEXT : CONTEXT
+					},
+				datatype: "JSON",
+				
+				success: function(args) {
+					//var res = JSON.parse(args).result;
+					var commentsList = JSON.parse(args);
+					alert(commentsList);
+					console.log(commentsList);
+					$.each(commentsList, function(index, jsonComment){
+						alert("COMMENT_CODE : " + jsonComment.COMMENT_CODE+"\n"+
+						"BOARD_CODE : " + jsonComment.BOARD_CODE+"\n"+
+						"USER_CODE : " + jsonComment.USER_CODE+"\n"+
+						"CONTEXT : " + jsonComment.CONTEXT+"\n"+
 
+						"COUNT_GOOD : " + jsonComment.COUNT_GOOD+"\n"+
+						"COUNT_BAD : " + jsonComment.COUNT_BAD+"\n"+
+						"CREATE_DATE : " + jsonComment.CREATE_DATE+"\n"+
+						"UPDATE_DATE : " + jsonComment.UPDATE_DATE+"\n"+
 
+						"GROUP_NO : " + jsonComment.GROUP_NO+"\n"+
+						"GROUP_ORDER : " + jsonComment.GROUP_ORDER+"\n"+
+						"GROUP_DEPTH : " + jsonComment.GROUP_DEPTH+"\n"+
+						"NAME : " + jsonComment.NAME);
+					});
+				},
+				
+				error : function(request, status, error) {
+					alert("통신 실패");
+					alert("code : " + request.status + "\n" +
+							"message : " + request.responseText + "\n" +
+							"error : " + error);
+				}        	  
+          })
+          
+      })
    })
-   
 </script>
 
 </head>
@@ -170,7 +218,7 @@
 
 
       <!-- Reply Form {s} -->
-      <div class="container mx-auto m-4 p-4 bg-ligth shadow">
+      <div class="container mx-auto m-4 p-4 bg-ligth shadow" id="commentSubmit">
          <%
             if (NAME != null) {
          %>
@@ -221,7 +269,7 @@
                <div id = "subCommemtForm${co.COMMENT_CODE}" style="padding-left: 50px; display: none;">
                   <form action="/Basic_Board_Project/BoardController?action=insertSubComment" method="post">
                      <input type="hidden" name="BOARD_CODE" value="${board.BOARD_CODE }">
-                      <input type="hidden" name="USER_CODE" value="<%=USER_CODE%>">
+                     <input type="hidden" name="USER_CODE" value="<%=USER_CODE%>">
                      <input type="hidden" name="GROUP_NO" value="${co.GROUP_NO }">
                      <input type="hidden" name="GROUP_ORDER" value="${co.GROUP_ORDER }">
                      <input type="hidden" name="GROUP_DEPTH" value="${co.GROUP_DEPTH }">
@@ -230,7 +278,7 @@
                       &nbsp;
                      <div style="margin-left:700px;">
                         <input type="button" value="취소" onclick="cancelSubComment(${co.COMMENT_CODE});" class="btn btn-dark" style="margin-right: 10px;">
-                         <input type="submit" value="댓글달기" class="btn btn-dark">
+                        <input type="submit" value="댓글달기" class="btn btn-dark">
                      </div>
                    </form>              
                </div>

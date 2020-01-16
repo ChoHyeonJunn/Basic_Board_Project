@@ -3,7 +3,9 @@ package com.controller;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Enumeration;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -11,6 +13,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 import com.VO.BoardsVO;
 import com.VO.CommentsVO;
@@ -95,8 +100,8 @@ public class BoardController extends HttpServlet {
 
 		case "insertComment":
 			insertComment();
-			boardContents();
-			break;
+			//boardContents();
+			return;
 
 		case "insertSubComment":
 			insertSubComment();
@@ -163,13 +168,54 @@ public class BoardController extends HttpServlet {
 		if (request.getParameter("CONTEXT") == "")
 			return;
 		CommentsVO comment = new CommentsVO();
-
-		comment.setBOARD_CODE(Integer.parseInt(request.getParameter("BOARD_CODE")));
+		JSONObject json = new JSONObject();
+		JSONArray jArray = new JSONArray();
+		
+		int BOARD_CODE  = Integer.parseInt(request.getParameter("BOARD_CODE"));
+		comment.setBOARD_CODE(BOARD_CODE);
 		comment.setUSER_CODE(Integer.parseInt(request.getParameter("USER_CODE")));
 		comment.setCONTEXT(request.getParameter("CONTEXT"));
+		
+		System.out.println(comment);
+		
+		int res = commentService.insertComment(comment);
+		
+		List<CommentsVO> list = null;
+		if (res > 0) {
+			boardService.increaseCountComment(Integer.parseInt(request.getParameter("BOARD_CODE")));
+			list = commentService.selectComments(BOARD_CODE);
+		}
+		SimpleDateFormat transFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-		commentService.insertComment(comment);
-		boardService.increaseCountComment(Integer.parseInt(request.getParameter("BOARD_CODE")));
+		json.put("result", res);
+		if(list != null) {
+			for(int i=0;i<list.size();i++) {
+				JSONObject jsonComment = new JSONObject();
+				jsonComment.put("COMMENT_CODE", list.get(i).getCOMMENT_CODE());
+				jsonComment.put("BOARD_CODE", list.get(i).getBOARD_CODE());
+				jsonComment.put("USER_CODE", list.get(i).getUSER_CODE());
+				jsonComment.put("CONTEXT", list.get(i).getCONTEXT());
+
+				jsonComment.put("COUNT_GOOD", list.get(i).getCOUNT_GOOD());
+				jsonComment.put("COUNT_BAD", list.get(i).getCOUNT_BAD());
+				jsonComment.put("CREATE_DATE", list.get(i).getCREATE_DATE());
+				jsonComment.put("UPDATE_DATE", list.get(i).getUPDATE_DATE());
+
+				jsonComment.put("GROUP_NO", list.get(i).getGROUP_NO());
+				jsonComment.put("GROUP_ORDER", list.get(i).getGROUP_ORDER());
+				jsonComment.put("GROUP_DEPTH", list.get(i).getGROUP_DEPTH());
+
+				jsonComment.put("NAME", list.get(i).getNAME());
+				
+				jArray.add(jsonComment);
+			}
+		}
+		//json.put("commentsList", jArray);
+
+		//out.print(json.toString());
+		out.print(jArray.toString());
+		out.flush();
+		out.close();
 	}
 
 	private void insertSubComment() {

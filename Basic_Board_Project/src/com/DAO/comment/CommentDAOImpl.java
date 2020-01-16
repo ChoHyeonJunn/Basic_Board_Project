@@ -41,10 +41,6 @@ public class CommentDAOImpl extends JDBCTemplate implements CommentDAO {
 				comment.setGROUP_ORDER(rs.getInt("GROUP_ORDER"));
 				comment.setGROUP_DEPTH(rs.getInt("GROUP_DEPTH"));
 
-				comment.setGROUP_NO(rs.getInt("GROUP_NO"));
-				comment.setGROUP_ORDER(rs.getInt("GROUP_ORDER"));
-				comment.setGROUP_DEPTH(rs.getInt("GROUP_DEPTH"));
-
 				commentsList.add(comment);
 			}
 
@@ -87,10 +83,6 @@ public class CommentDAOImpl extends JDBCTemplate implements CommentDAO {
 				comment.setCREATE_DATE(rs.getDate("CREATE_DATE"));
 				comment.setUPDATE_DATE(rs.getDate("UPDATE_DATE"));
 				
-				comment.setGROUP_NO(rs.getInt("GROUP_NO"));
-				comment.setGROUP_ORDER(rs.getInt("GROUP_ORDER"));
-				comment.setGROUP_DEPTH(rs.getInt("GROUP_DEPTH"));
-
 				comment.setGROUP_NO(rs.getInt("GROUP_NO"));
 				comment.setGROUP_ORDER(rs.getInt("GROUP_ORDER"));
 				comment.setGROUP_DEPTH(rs.getInt("GROUP_DEPTH"));
