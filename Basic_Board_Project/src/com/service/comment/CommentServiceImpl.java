@@ -47,8 +47,10 @@ public class CommentServiceImpl implements CommentService {
 		// 댓글(대댓글) 삭제 적합성 판단 (내 DEPTH와 내가 속한 GROUP의 MAX(DEPTH)가 같다면 삭제 가능)
 		if (commentDAO.maxDepth(GROUP_NO) == GROUP_DEPTH) {
 			commentDAO.deleteComment(COMMENT_CODE);
+			System.out.println("삭제 적합 -> 삭제");
 			return true;
 		} else {
+			System.out.println("삭제 부적합 -> 미삭제");
 			return false;
 		}
 	}

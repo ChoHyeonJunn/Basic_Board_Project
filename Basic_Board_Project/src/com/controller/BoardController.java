@@ -3,7 +3,6 @@ package com.controller;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
@@ -97,16 +96,18 @@ public class BoardController extends HttpServlet {
 				selectList();
 			}
 			break;
+		// boardContent 로드 후 댓글 리스트 불러오기 ajax 통신!
+		case "selectComment":
+			selectComment();
+			return;
 
 		case "insertComment":
 			insertComment();
-			//boardContents();
 			return;
 
 		case "insertSubComment":
 			insertSubComment();
-			boardContents();
-			break;
+			return;
 
 		case "updateComment":
 			updateComment();
@@ -127,92 +128,80 @@ public class BoardController extends HttpServlet {
 		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
-	private void statusComment() {
-		String status = request.getParameter("status");
-
-		if (status.equals("good"))
-			commentService.goodComment(Integer.parseInt(request.getParameter("COMMENT_CODE")));
-		if (status.equals("bad"))
-			commentService.badComment(Integer.parseInt(request.getParameter("COMMENT_CODE")));
-
-	}
-
-	private void deleteComment() {
+	private void selectComment() {
 		int BOARD_CODE = Integer.parseInt(request.getParameter("BOARD_CODE"));
+		List<CommentsVO> list = commentService.selectComments(BOARD_CODE);
 
-		if (commentService.deleteComment(Integer.parseInt(request.getParameter("COMMENT_CODE")),
-				Integer.parseInt(request.getParameter("COMMENT_CODE")),
-				Integer.parseInt(request.getParameter("GROUP_NO")))) {
-			out.println("<script>alert('댓글 삭제 완료!');</script>");
-			out.println("<script>location.href='/BoardController?action=boardContents&BOARD_CODE=" + BOARD_CODE
-					+ "';</script>");
-			out.close();
+		JSONArray jArray = new JSONArray();
+
+		for (int i = 0; i < list.size(); i++) {
+			JSONObject jsonComment = new JSONObject();
+
+			jsonComment.put("COMMENT_CODE", list.get(i).getCOMMENT_CODE());
+			jsonComment.put("BOARD_CODE", list.get(i).getBOARD_CODE());
+			jsonComment.put("USER_CODE", list.get(i).getUSER_CODE());
+			jsonComment.put("CONTEXT", list.get(i).getCONTEXT());
+
+			jsonComment.put("COUNT_GOOD", list.get(i).getCOUNT_GOOD());
+			jsonComment.put("COUNT_BAD", list.get(i).getCOUNT_BAD());
+			jsonComment.put("CREATE_DATE", list.get(i).getCREATE_DATE().toString());
+			jsonComment.put("UPDATE_DATE", list.get(i).getUPDATE_DATE().toString());
+
+			jsonComment.put("GROUP_NO", list.get(i).getGROUP_NO());
+			jsonComment.put("GROUP_ORDER", list.get(i).getGROUP_ORDER());
+			jsonComment.put("GROUP_DEPTH", list.get(i).getGROUP_DEPTH());
+
+			jsonComment.put("NAME", list.get(i).getNAME());
+
+			jArray.add(jsonComment);
 		}
 
-		boardService.decreaseCountComment(BOARD_CODE);
-	}
-
-	private void updateComment() {
-		if (request.getParameter("CONTEXT") == "")
-			return;
-		CommentsVO comment = new CommentsVO();
-
-		comment.setBOARD_CODE(Integer.parseInt(request.getParameter("BOARD_CODE")));
-		comment.setCOMMENT_CODE(Integer.parseInt(request.getParameter("COMMENT_CODE")));
-		comment.setCONTEXT(request.getParameter("CONTEXT"));
-
-		commentService.updateComment(comment);
+		out.print(jArray.toString());
+		out.flush();
+		out.close();
 	}
 
 	private void insertComment() {
 		if (request.getParameter("CONTEXT") == "")
 			return;
 		CommentsVO comment = new CommentsVO();
-		JSONObject json = new JSONObject();
 		JSONArray jArray = new JSONArray();
-		
-		int BOARD_CODE  = Integer.parseInt(request.getParameter("BOARD_CODE"));
+
+		int BOARD_CODE = Integer.parseInt(request.getParameter("BOARD_CODE"));
 		comment.setBOARD_CODE(BOARD_CODE);
 		comment.setUSER_CODE(Integer.parseInt(request.getParameter("USER_CODE")));
 		comment.setCONTEXT(request.getParameter("CONTEXT"));
-		
-		System.out.println(comment);
-		
+
 		int res = commentService.insertComment(comment);
-		
+
 		List<CommentsVO> list = null;
 		if (res > 0) {
-			boardService.increaseCountComment(Integer.parseInt(request.getParameter("BOARD_CODE")));
+			boardService.increaseCountComment(BOARD_CODE);
 			list = commentService.selectComments(BOARD_CODE);
 		}
-		SimpleDateFormat transFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-		json.put("result", res);
-		if(list != null) {
-			for(int i=0;i<list.size();i++) {
-				JSONObject jsonComment = new JSONObject();
-				jsonComment.put("COMMENT_CODE", list.get(i).getCOMMENT_CODE());
-				jsonComment.put("BOARD_CODE", list.get(i).getBOARD_CODE());
-				jsonComment.put("USER_CODE", list.get(i).getUSER_CODE());
-				jsonComment.put("CONTEXT", list.get(i).getCONTEXT());
+		for (int i = 0; i < list.size(); i++) {
+			JSONObject jsonComment = new JSONObject();
 
-				jsonComment.put("COUNT_GOOD", list.get(i).getCOUNT_GOOD());
-				jsonComment.put("COUNT_BAD", list.get(i).getCOUNT_BAD());
-				jsonComment.put("CREATE_DATE", list.get(i).getCREATE_DATE());
-				jsonComment.put("UPDATE_DATE", list.get(i).getUPDATE_DATE());
+			jsonComment.put("COMMENT_CODE", list.get(i).getCOMMENT_CODE());
+			jsonComment.put("BOARD_CODE", list.get(i).getBOARD_CODE());
+			jsonComment.put("USER_CODE", list.get(i).getUSER_CODE());
+			jsonComment.put("CONTEXT", list.get(i).getCONTEXT());
 
-				jsonComment.put("GROUP_NO", list.get(i).getGROUP_NO());
-				jsonComment.put("GROUP_ORDER", list.get(i).getGROUP_ORDER());
-				jsonComment.put("GROUP_DEPTH", list.get(i).getGROUP_DEPTH());
+			jsonComment.put("COUNT_GOOD", list.get(i).getCOUNT_GOOD());
+			jsonComment.put("COUNT_BAD", list.get(i).getCOUNT_BAD());
+			jsonComment.put("CREATE_DATE", list.get(i).getCREATE_DATE().toString());
+			jsonComment.put("UPDATE_DATE", list.get(i).getUPDATE_DATE().toString());
 
-				jsonComment.put("NAME", list.get(i).getNAME());
-				
-				jArray.add(jsonComment);
-			}
+			jsonComment.put("GROUP_NO", list.get(i).getGROUP_NO());
+			jsonComment.put("GROUP_ORDER", list.get(i).getGROUP_ORDER());
+			jsonComment.put("GROUP_DEPTH", list.get(i).getGROUP_DEPTH());
+
+			jsonComment.put("NAME", list.get(i).getNAME());
+
+			jArray.add(jsonComment);
 		}
-		//json.put("commentsList", jArray);
 
-		//out.print(json.toString());
 		out.print(jArray.toString());
 		out.flush();
 		out.close();
@@ -230,8 +219,54 @@ public class BoardController extends HttpServlet {
 		subComment.setUSER_CODE(Integer.parseInt(request.getParameter("USER_CODE")));
 		subComment.setCONTEXT(request.getParameter("CONTEXT"));
 
-		commentService.insertComment(parentComment, subComment);
-		boardService.increaseCountComment(Integer.parseInt(request.getParameter("BOARD_CODE")));
+		int res = commentService.insertComment(parentComment, subComment);
+		if (res > 0) {
+			boardService.increaseCountComment(Integer.parseInt(request.getParameter("BOARD_CODE")));
+			out.println("true");
+			out.close();
+		} else {
+			out.println("false");
+			out.close();
+		}
+	}
+
+	private void statusComment() {
+		String status = request.getParameter("status");
+
+		if (status.equals("good"))
+			commentService.goodComment(Integer.parseInt(request.getParameter("COMMENT_CODE")));
+		if (status.equals("bad"))
+			commentService.badComment(Integer.parseInt(request.getParameter("COMMENT_CODE")));
+
+	}
+
+	private void deleteComment() {
+		int BOARD_CODE = Integer.parseInt(request.getParameter("BOARD_CODE"));
+		System.out.println("delete Comment");
+
+		if (commentService.deleteComment(Integer.parseInt(request.getParameter("COMMENT_CODE")),
+				Integer.parseInt(request.getParameter("GROUP_DEPTH")),
+				Integer.parseInt(request.getParameter("GROUP_NO")))) {
+			boardService.decreaseCountComment(BOARD_CODE);
+			out.println("true");
+			out.close();
+		} else {
+			out.println("false");
+			out.close();
+		}
+
+	}
+
+	private void updateComment() {
+		if (request.getParameter("CONTEXT") == "")
+			return;
+		CommentsVO comment = new CommentsVO();
+
+		comment.setBOARD_CODE(Integer.parseInt(request.getParameter("BOARD_CODE")));
+		comment.setCOMMENT_CODE(Integer.parseInt(request.getParameter("COMMENT_CODE")));
+		comment.setCONTEXT(request.getParameter("CONTEXT"));
+
+		commentService.updateComment(comment);
 	}
 
 	// 게시글 리스트
