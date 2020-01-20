@@ -111,8 +111,7 @@ public class BoardController extends HttpServlet {
 
 		case "updateComment":
 			updateComment();
-			boardContents();
-			break;
+			return;
 
 		case "deleteComment":
 			deleteComment();
@@ -120,7 +119,7 @@ public class BoardController extends HttpServlet {
 
 		case "statusComment":
 			statusComment();
-			boardContents();
+			return;
 		}
 
 		RequestDispatcher dispatcher = request.getRequestDispatcher(view);
@@ -165,46 +164,21 @@ public class BoardController extends HttpServlet {
 		if (request.getParameter("CONTEXT") == "")
 			return;
 		CommentsVO comment = new CommentsVO();
-		JSONArray jArray = new JSONArray();
 
-		int BOARD_CODE = Integer.parseInt(request.getParameter("BOARD_CODE"));
-		comment.setBOARD_CODE(BOARD_CODE);
+		comment.setBOARD_CODE(Integer.parseInt(request.getParameter("BOARD_CODE")));
 		comment.setUSER_CODE(Integer.parseInt(request.getParameter("USER_CODE")));
 		comment.setCONTEXT(request.getParameter("CONTEXT"));
 
 		int res = commentService.insertComment(comment);
 
-		List<CommentsVO> list = null;
 		if (res > 0) {
-			boardService.increaseCountComment(BOARD_CODE);
-			list = commentService.selectComments(BOARD_CODE);
+			boardService.increaseCountComment(Integer.parseInt(request.getParameter("BOARD_CODE")));
+			out.println("true");
+			out.close();
+		} else {
+			out.println("false");
+			out.close();
 		}
-
-		for (int i = 0; i < list.size(); i++) {
-			JSONObject jsonComment = new JSONObject();
-
-			jsonComment.put("COMMENT_CODE", list.get(i).getCOMMENT_CODE());
-			jsonComment.put("BOARD_CODE", list.get(i).getBOARD_CODE());
-			jsonComment.put("USER_CODE", list.get(i).getUSER_CODE());
-			jsonComment.put("CONTEXT", list.get(i).getCONTEXT());
-
-			jsonComment.put("COUNT_GOOD", list.get(i).getCOUNT_GOOD());
-			jsonComment.put("COUNT_BAD", list.get(i).getCOUNT_BAD());
-			jsonComment.put("CREATE_DATE", list.get(i).getCREATE_DATE().toString());
-			jsonComment.put("UPDATE_DATE", list.get(i).getUPDATE_DATE().toString());
-
-			jsonComment.put("GROUP_NO", list.get(i).getGROUP_NO());
-			jsonComment.put("GROUP_ORDER", list.get(i).getGROUP_ORDER());
-			jsonComment.put("GROUP_DEPTH", list.get(i).getGROUP_DEPTH());
-
-			jsonComment.put("NAME", list.get(i).getNAME());
-
-			jArray.add(jsonComment);
-		}
-
-		out.print(jArray.toString());
-		out.flush();
-		out.close();
 	}
 
 	private void insertSubComment() {
@@ -230,14 +204,23 @@ public class BoardController extends HttpServlet {
 		}
 	}
 
-	private void statusComment() {
-		String status = request.getParameter("status");
+	private void updateComment() {
+		if (request.getParameter("CONTEXT") == "")
+			return;
+		CommentsVO comment = new CommentsVO();
 
-		if (status.equals("good"))
-			commentService.goodComment(Integer.parseInt(request.getParameter("COMMENT_CODE")));
-		if (status.equals("bad"))
-			commentService.badComment(Integer.parseInt(request.getParameter("COMMENT_CODE")));
+		comment.setBOARD_CODE(Integer.parseInt(request.getParameter("BOARD_CODE")));
+		comment.setCOMMENT_CODE(Integer.parseInt(request.getParameter("COMMENT_CODE")));
+		comment.setCONTEXT(request.getParameter("CONTEXT"));
 
+		int res = commentService.updateComment(comment);
+		if (res > 0) {
+			out.println("true");
+			out.close();
+		} else {
+			out.println("false");
+			out.close();
+		}
 	}
 
 	private void deleteComment() {
@@ -257,16 +240,16 @@ public class BoardController extends HttpServlet {
 
 	}
 
-	private void updateComment() {
-		if (request.getParameter("CONTEXT") == "")
-			return;
-		CommentsVO comment = new CommentsVO();
+	private void statusComment() {
+		String status = request.getParameter("status");
 
-		comment.setBOARD_CODE(Integer.parseInt(request.getParameter("BOARD_CODE")));
-		comment.setCOMMENT_CODE(Integer.parseInt(request.getParameter("COMMENT_CODE")));
-		comment.setCONTEXT(request.getParameter("CONTEXT"));
-
-		commentService.updateComment(comment);
+		int res = 0;
+		if (status.equals("good"))
+			res = commentService.goodComment(Integer.parseInt(request.getParameter("COMMENT_CODE")));
+		if (status.equals("bad"))
+			res = commentService.badComment(Integer.parseInt(request.getParameter("COMMENT_CODE")));
+		out.println(res);
+		out.close();
 	}
 
 	// 게시글 리스트
